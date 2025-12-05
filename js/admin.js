@@ -45,18 +45,29 @@ function switchTab(tabId) {
 
 async function fetchData() {
     try {
+        console.log('Fetching data from:', CONFIG.APPS_SCRIPT_URL);
         const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getData`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log('Data received:', data);
 
         if (data.error) {
             alert('데이터를 불러오는 중 오류가 발생했습니다: ' + JSON.stringify(data.error));
             return;
         }
 
+        if (!data || data.length === 0) {
+            console.warn('No data received from server.');
+        }
+
         processData(data);
     } catch (error) {
         console.error('Error fetching data:', error);
-        alert('데이터를 불러오지 못했습니다. Google Apps Script 배포를 확인해주세요.');
+        alert(`데이터를 불러오지 못했습니다.\n\n원인: ${error.message}\n\nGoogle Apps Script 배포 URL을 확인하거나, 잠시 후 다시 시도해주세요.`);
     }
 }
 
