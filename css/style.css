@@ -1,0 +1,328 @@
+:root {
+    --primary-color: #2E7D32;
+    /* Forest Green */
+    --primary-light: #E8F5E9;
+    --secondary-color: #81C784;
+    --text-color: #333;
+    --text-light: #666;
+    --bg-color: #F5F7FA;
+    --white: #FFFFFF;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    background-color: var(--white);
+    min-height: 100vh;
+    position: relative;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+@media (min-width: 600px) {
+    .app-container {
+        min-height: auto;
+        margin: 20px;
+        border-radius: var(--radius);
+        height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+}
+
+.page {
+    display: none;
+    padding: 2rem;
+    height: 100%;
+    flex-direction: column;
+    animation: fadeIn 0.5s ease;
+}
+
+.page.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Landing Page */
+#landing-page {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+}
+
+.logo-area h1 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: left;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.info-list {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.info-list li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: #1B5E20;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+}
+
+.btn-secondary {
+    background-color: #e0e0e0;
+    color: var(--text-color);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-secondary:hover {
+    background-color: #d5d5d5;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+/* Diagnosis Page */
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background-color: #eee;
+    border-radius: 3px;
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.header h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.question-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.question-text {
+    font-weight: 500;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.rating-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rating-option {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.rating-option:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
+}
+
+.rating-option input[type="radio"] {
+    width: auto;
+    margin-right: 10px;
+}
+
+.rating-option.selected {
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.navigation-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.navigation-buttons button {
+    flex: 1;
+}
+
+/* Completion Page */
+.completion-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.icon-check {
+    width: 80px;
+    height: 80px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 20px rgba(46, 125, 50, 0.2);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

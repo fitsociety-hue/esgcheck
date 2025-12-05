@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강동어울림복지관 ESG 자체진단</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Landing Page -->
+        <section id="landing-page" class="page active">
+            <div class="hero-content">
+                <div class="logo-area">
+                    <h1>ESG 자체진단표</h1>
+                    <p class="subtitle">강동어울림복지관 지속가능경영을 위한 첫걸음</p>
+                </div>
+                <div class="info-card">
+                    <h3>진단 안내</h3>
+                    <p>본 진단은 2026년 ESG 경영 도입을 위한 기초 자료로 활용됩니다.</p>
+                    <ul class="info-list">
+                        <li><strong>참여 대상:</strong> 전 직원 (약 40명)</li>
+                        <li><strong>소요 시간:</strong> 약 10분</li>
+                        <li><strong>평가 방식:</strong> 우수 / 양호 / 보통 / 미흡</li>
+                    </ul>
+                </div>
+                <button class="btn-primary" onclick="startDiagnosis()">진단 시작하기</button>
+            </div>
+        </section>
+
+        <!-- User Info Page -->
+        <section id="user-info-page" class="page">
+            <div class="header">
+                <h2>기본 정보 입력</h2>
+                <p>통계 분석을 위해 기본 정보를 입력해 주세요.</p>
+            </div>
+            <form id="user-info-form" onsubmit="submitUserInfo(event)">
+                <div class="form-group">
+                    <label for="userName">성명 (선택)</label>
+                    <input type="text" id="userName" placeholder="성명을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="department">소속 부서</label>
+                    <select id="department" required>
+                        <option value="">선택해 주세요</option>
+                        <option value="기획운영팀">기획운영팀</option>
+                        <option value="사례관리팀">사례관리팀</option>
+                        <option value="서비스제공팀">서비스제공팀</option>
+                        <option value="지역조직팀">지역조직팀</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">다음으로</button>
+            </form>
+        </section>
+
+        <!-- Diagnosis Page -->
+        <section id="diagnosis-page" class="page">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="header">
+                <h2 id="category-title">카테고리 제목</h2>
+                <p id="category-desc">카테고리 설명</p>
+            </div>
+
+            <div id="questions-container">
+                <!-- Questions will be injected here -->
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-secondary" onclick="prevCategory()" id="btn-prev">이전</button>
+                <button class="btn-primary" onclick="nextCategory()" id="btn-next">다음</button>
+            </div>
+        </section>
+
+        <!-- Completion Page -->
+        <section id="completion-page" class="page">
+            <div class="completion-content">
+                <div class="icon-check">✓</div>
+                <h2>진단이 완료되었습니다</h2>
+                <p>참여해 주셔서 감사합니다.<br>여러분의 소중한 의견은 복지관의 발전에 큰 힘이 됩니다.</p>
+                <button class="btn-primary" onclick="location.reload()">처음으로 돌아가기</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p>제출 중입니다...</p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
