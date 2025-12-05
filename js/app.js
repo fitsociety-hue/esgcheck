@@ -252,9 +252,9 @@ async function submitDiagnosis() {
         } else {
             await fetch(CONFIG.APPS_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                redirect: 'follow',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain;charset=utf-8',
                 },
                 body: JSON.stringify(payload)
             });

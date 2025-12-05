@@ -71,6 +71,10 @@ function renderComprehensive(data) {
     // 1. Total Participants
     document.getElementById('total-participants').textContent = data.length;
 
+    // Update Last Update Time
+    const now = new Date();
+    document.getElementById('last-update-time').textContent = now.toLocaleTimeString();
+
     // 2. E/S/G Averages
     const scores = { E: 0, S: 0, G: 0 };
     const counts = { E: 0, S: 0, G: 0 };
