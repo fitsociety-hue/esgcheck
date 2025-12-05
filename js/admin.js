@@ -1,5 +1,5 @@
-// Admin Password (Client-side only - NOT SECURE)
-const ADMIN_PASSWORD = "admin";
+// Admin Password
+const ADMIN_PASSWORD = "0741";
 
 function checkLogin() {
     const input = document.getElementById('admin-password').value;
@@ -39,12 +39,21 @@ function processData(data) {
     document.getElementById('average-score').textContent = avgScore;
 
     // 3. Recent Table
+    renderRecentTable(data);
+
+    // 4. Category Chart (Overall)
+    renderCategoryChart(data);
+
+    // 5. Team Analysis
+    renderTeamAnalysis(data);
+}
+
+function renderRecentTable(data) {
     const tableBody = document.getElementById('recent-table-body');
     tableBody.innerHTML = '';
     // Show last 10 entries reversed
     data.slice(-10).reverse().forEach(row => {
         const tr = document.createElement('tr');
-        // Format date if possible
         let dateStr = row['Timestamp'];
         try {
             const date = new Date(row['Timestamp']);
@@ -59,14 +68,12 @@ function processData(data) {
         `;
         tableBody.appendChild(tr);
     });
-
-    // 4. Category Chart
-    renderChart(data);
 }
 
-function renderChart(data) {
+function renderCategoryChart(data) {
     // Calculate average for each category
-    // We need to map question IDs to categories
+    // New structure: answers are keyed by "category_id_rating" (e.g., "env_management_rating")
+
     const categoryScores = {};
     const categoryCounts = {};
 
@@ -77,17 +84,11 @@ function renderChart(data) {
 
     data.forEach(row => {
         ESG_CATEGORIES.forEach(cat => {
-            let catSum = 0;
-            let qCount = 0;
-            cat.questions.forEach(q => {
-                // Check if row has the answer (handling potential key differences)
-                if (row[q.id]) {
-                    catSum += Number(row[q.id]);
-                    qCount++;
-                }
-            });
-            if (qCount > 0) {
-                categoryScores[cat.title] += (catSum / qCount);
+            const ratingKey = `${cat.id}_rating`;
+            const score = Number(row[ratingKey]);
+
+            if (!isNaN(score) && score > 0) {
+                categoryScores[cat.title] += score;
                 categoryCounts[cat.title]++;
             }
         });
@@ -101,7 +102,6 @@ function renderChart(data) {
 
     const ctx = document.getElementById('categoryChart').getContext('2d');
 
-    // Destroy existing chart if any
     if (window.myChart) {
         window.myChart.destroy();
     }
@@ -111,7 +111,7 @@ function renderChart(data) {
         data: {
             labels: labels,
             datasets: [{
-                label: '분야별 평균 점수 (4점 만점)',
+                label: '전체 평균 점수 (4점 만점)',
                 data: averages,
                 backgroundColor: 'rgba(46, 125, 50, 0.6)',
                 borderColor: 'rgba(46, 125, 50, 1)',
@@ -130,6 +130,72 @@ function renderChart(data) {
     });
 }
 
+function renderTeamAnalysis(data) {
+    // Group data by Department
+    const teams = {};
+
+    data.forEach(row => {
+        const dept = row['Department'] || '미지정';
+        if (!teams[dept]) {
+            teams[dept] = {
+                count: 0,
+                totalScoreSum: 0,
+                categorySums: {}
+            };
+            ESG_CATEGORIES.forEach(cat => {
+                teams[dept].categorySums[cat.id] = 0;
+            });
+        }
+
+        teams[dept].count++;
+        teams[dept].totalScoreSum += (Number(row['Total Score']) || 0);
+
+        ESG_CATEGORIES.forEach(cat => {
+            const ratingKey = `${cat.id}_rating`;
+            const score = Number(row[ratingKey]) || 0;
+            teams[dept].categorySums[cat.id] += score;
+        });
+    });
+
+    // Render Table
+    const container = document.getElementById('team-analysis-container');
+    if (!container) return; // Guard clause if element doesn't exist yet
+
+    let html = `
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>부서명</th>
+                    <th>참여 인원</th>
+                    <th>평균 총점</th>
+                    ${ESG_CATEGORIES.map(c => `<th>${c.title.split(' ')[1]}</th>`).join('')}
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    Object.keys(teams).forEach(dept => {
+        const team = teams[dept];
+        const avgTotal = (team.totalScoreSum / team.count).toFixed(1);
+
+        html += `
+            <tr>
+                <td>${dept}</td>
+                <td>${team.count}명</td>
+                <td>${avgTotal}</td>
+                ${ESG_CATEGORIES.map(cat => {
+            const avg = (team.categorySums[cat.id] / team.count).toFixed(1);
+            return `<td>${avg}</td>`;
+        }).join('')}
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
 function refreshData() {
     fetchData();
 }
+
