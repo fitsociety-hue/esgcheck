@@ -199,3 +199,116 @@ function refreshData() {
     fetchData();
 }
 
+// --- Data Upload & Processing ---
+
+function toggleUploadMode() {
+    const section = document.getElementById('upload-section');
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+}
+
+function processFile() {
+    const fileInput = document.getElementById('file-input');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('파일을 선택해 주세요.');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        // Parse JSON
+        const categories = parseExcelData(jsonData);
+
+        // Display JSON
+        const output = document.getElementById('json-output');
+        output.value = "const ESG_CATEGORIES = " + JSON.stringify(categories, null, 4) + ";";
+        document.getElementById('json-output-container').style.display = 'block';
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
+function parseExcelData(rows) {
+    // Assumption: Row 0 is header. Data starts from Row 1.
+    // Columns: [0] Main(E/S/G), [1] Middle, [2] Indicator, [3] Content
+
+    const categories = [];
+    let currentMain = null;
+    let currentMiddle = null;
+    let currentIndicator = null;
+
+    // Helper to find or create
+    const findOrCreate = (array, key, value, factory) => {
+        let item = array.find(i => i[key] === value);
+        if (!item) {
+            item = factory();
+            array.push(item);
+        }
+        return item;
+    };
+
+    rows.slice(1).forEach(row => {
+        if (!row[0] && !row[1] && !row[2] && !row[3]) return; // Skip empty rows
+
+        const mainTitle = row[0];
+        const middleTitle = row[1];
+        const indicatorTitle = row[2];
+        const content = row[3];
+
+        // 1. Main Category
+        if (mainTitle) {
+            let id = "E";
+            if (mainTitle.includes("사회") || mainTitle.includes("S")) id = "S";
+            if (mainTitle.includes("거버넌스") || mainTitle.includes("G")) id = "G";
+
+            currentMain = findOrCreate(categories, 'id', id, () => ({
+                id: id,
+                title: mainTitle,
+                description: "",
+                middleCategories: []
+            }));
+        }
+
+        // 2. Middle Category
+        if (middleTitle && currentMain) {
+            currentMiddle = findOrCreate(currentMain.middleCategories, 'title', middleTitle, () => ({
+                title: middleTitle,
+                indicators: []
+            }));
+        }
+
+        // 3. Indicator
+        if (indicatorTitle && currentMiddle) {
+            // Generate a simple ID for the indicator
+            const indicatorId = `${currentMain.id}_${currentMiddle.indicators.length + 1}`;
+
+            currentIndicator = findOrCreate(currentMiddle.indicators, 'title', indicatorTitle, () => ({
+                id: indicatorId,
+                title: indicatorTitle,
+                contents: []
+            }));
+        }
+
+        // 4. Content
+        if (content && currentIndicator) {
+            currentIndicator.contents.push(content);
+        }
+    });
+
+    return categories;
+}
+
+function copyJson() {
+    const output = document.getElementById('json-output');
+    output.select();
+    document.execCommand('copy');
+    alert('JSON 코드가 복사되었습니다. js/data.js 파일에 붙여넣으세요.');
+}

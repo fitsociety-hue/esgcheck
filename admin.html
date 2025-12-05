@@ -76,6 +76,7 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -91,7 +92,31 @@
     <div class="admin-container" id="admin-content" style="display: none;">
         <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
             <h1>ESG 진단 현황판</h1>
-            <button class="btn-secondary" onclick="refreshData()">데이터 새로고침</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-secondary" onclick="toggleUploadMode()">데이터 관리</button>
+                <button class="btn-secondary" onclick="refreshData()">데이터 새로고침</button>
+            </div>
+        </div>
+
+        <!-- Data Upload Section (Hidden by default) -->
+        <div id="upload-section" class="card" style="display: none; margin-bottom: 2rem; border: 2px dashed #2E7D32;">
+            <h3>진단 문항 데이터 업로드</h3>
+            <p style="margin-bottom: 1rem; color: #666;">
+                엑셀(.xlsx) 또는 CSV 파일을 업로드하여 진단 문항을 업데이트할 수 있습니다.<br>
+                <strong>형식:</strong> 대분류 | 중분류 | 진단지표 | 진단내용 (4개 열)
+            </p>
+            <input type="file" id="file-input" accept=".xlsx, .xls, .csv" style="margin-bottom: 1rem;">
+            <button class="btn-primary" onclick="processFile()">파일 처리 및 JSON 생성</button>
+
+            <div id="json-output-container" style="display: none; margin-top: 1rem;">
+                <h4>생성된 데이터 (JSON)</h4>
+                <textarea id="json-output"
+                    style="width: 100%; height: 200px; margin-bottom: 1rem; font-family: monospace;"></textarea>
+                <button class="btn-secondary" onclick="copyJson()">JSON 복사하기</button>
+                <p style="font-size: 0.9rem; color: #d32f2f; margin-top: 0.5rem;">
+                    * 이 코드를 복사하여 개발자에게 전달하거나 js/data.js 파일에 덮어씌우세요.
+                </p>
+            </div>
         </div>
 
         <div class="dashboard-grid">
