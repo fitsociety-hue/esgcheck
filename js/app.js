@@ -37,7 +37,7 @@ function submitUserInfo(event) {
     const department = document.getElementById('department').value;
 
     if (!department) {
-        alert('소속 부서를 선택해 주세요.');
+        alert('소속 부서를 입력해 주세요.');
         return;
     }
 
