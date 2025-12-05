@@ -62,47 +62,65 @@ function renderCategory() {
     // Render Content
     questionsContainer.innerHTML = '';
 
-    // Create Main Card
-    const card = document.createElement('div');
-    card.className = 'question-card';
+    // Iterate through Middle Categories
+    category.middleCategories.forEach(middle => {
+        // Middle Category Header
+        const middleHeader = document.createElement('h3');
+        middleHeader.textContent = middle.title;
+        middleHeader.style.color = '#2E7D32';
+        middleHeader.style.marginTop = '2rem';
+        middleHeader.style.marginBottom = '1rem';
+        middleHeader.style.borderBottom = '2px solid #E8F5E9';
+        middleHeader.style.paddingBottom = '0.5rem';
+        questionsContainer.appendChild(middleHeader);
 
-    // 1. Diagnosis Contents (List of items with checklists)
-    let contentsHtml = '<div class="contents-section">';
-    contentsHtml += '<p class="section-label">진단 내용 (각 항목별 해당사항 체크)</p>';
+        // Iterate through Indicators
+        middle.indicators.forEach(indicator => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
 
-    category.contents.forEach((content, index) => {
-        const contentId = `${category.id}_content_${index}`;
-        const existingChecks = checks[contentId] || [];
+            // Indicator Title
+            const titleHtml = `<h4 style="margin-bottom: 1rem; color: #333;">${indicator.title}</h4>`;
 
-        contentsHtml += `
-            <div class="content-item" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee;">
-                <div class="question-text" style="margin-bottom: 0.8rem;">${content}</div>
-                <div class="check-options">
-                    ${renderCheckOptions(contentId, existingChecks)}
+            // 1. Diagnosis Contents (List of items with checklists)
+            let contentsHtml = '<div class="contents-section">';
+            contentsHtml += '<p class="section-label">진단 내용 확인 (해당사항 체크)</p>';
+
+            indicator.contents.forEach((content, index) => {
+                const contentId = `${indicator.id}_content_${index}`;
+                const existingChecks = checks[contentId] || [];
+
+                contentsHtml += `
+                    <div class="content-item" style="margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px dashed #eee;">
+                        <div class="question-text" style="margin-bottom: 0.5rem; font-size: 0.95rem;">${content}</div>
+                        <div class="check-options">
+                            ${renderCheckOptions(contentId, existingChecks)}
+                        </div>
+                    </div>
+                `;
+            });
+            contentsHtml += '</div>';
+
+            // 2. Rating Section (One per Indicator)
+            const ratingId = `${indicator.id}_rating`;
+            const existingRating = answers[ratingId];
+
+            let ratingHtml = `
+                <div class="rating-section" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid #eee;">
+                    <p class="section-label" style="font-size: 1rem; color: #2E7D32; font-weight: bold;">진단 지표 평가 (필수)</p>
+                    <div class="rating-options">
+                        ${renderRatingOption(ratingId, '우수', 4, existingRating)}
+                        ${renderRatingOption(ratingId, '양호', 3, existingRating)}
+                        ${renderRatingOption(ratingId, '보통', 2, existingRating)}
+                        ${renderRatingOption(ratingId, '미흡', 1, existingRating)}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+
+            card.innerHTML = titleHtml + contentsHtml + ratingHtml;
+            questionsContainer.appendChild(card);
+        });
     });
-    contentsHtml += '</div>';
-
-    // 2. Rating Section (One per Category)
-    const ratingId = `${category.id}_rating`;
-    const existingRating = answers[ratingId];
-
-    let ratingHtml = `
-        <div class="rating-section" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #eee;">
-            <p class="section-label" style="font-size: 1.1rem; color: #2E7D32;">진단 지표 평가 (필수)</p>
-            <div class="rating-options">
-                ${renderRatingOption(ratingId, '우수', 4, existingRating)}
-                ${renderRatingOption(ratingId, '양호', 3, existingRating)}
-                ${renderRatingOption(ratingId, '보통', 2, existingRating)}
-                ${renderRatingOption(ratingId, '미흡', 1, existingRating)}
-            </div>
-        </div>
-    `;
-
-    card.innerHTML = contentsHtml + ratingHtml;
-    questionsContainer.appendChild(card);
 
     // Update Buttons
     btnPrev.style.display = currentCategoryIndex === 0 ? 'none' : 'block';
@@ -174,10 +192,20 @@ function prevCategory() {
 function nextCategory() {
     // Validation
     const category = ESG_CATEGORIES[currentCategoryIndex];
-    const ratingId = `${category.id}_rating`;
+    let allAnswered = true;
 
-    if (!answers[ratingId]) {
-        alert('진단 지표 평가를 선택해 주세요.');
+    // Check all indicators in all middle categories
+    category.middleCategories.forEach(middle => {
+        middle.indicators.forEach(indicator => {
+            const ratingId = `${indicator.id}_rating`;
+            if (!answers[ratingId]) {
+                allAnswered = false;
+            }
+        });
+    });
+
+    if (!allAnswered) {
+        alert('모든 진단 지표에 대해 평가를 선택해 주세요.');
         return;
     }
 
@@ -240,4 +268,3 @@ async function submitDiagnosis() {
         loadingOverlay.classList.remove('active');
     }
 }
-
