@@ -1,4 +1,5 @@
-﻿:root {
+﻿/* Global Styles & Variables */
+:root {
     --primary-color: #009688;
     --primary-dark: #00796B;
     --primary-light: #E0F2F1;
@@ -8,7 +9,6 @@
     --bg-color: #F5F7FA;
     --white: #FFFFFF;
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    /* Softer shadow */
     --radius: 16px;
     --transition: all 0.3s ease;
     --font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
@@ -35,7 +35,6 @@ body {
 .app-container {
     width: 100%;
     max-width: 1000px;
-    /* Constrain width */
     margin: 0 auto;
     padding: 0 1rem;
 }
@@ -81,7 +80,6 @@ body {
 .header {
     margin-bottom: 2rem;
     text-align: center;
-    /* Center header text */
 }
 
 .header h2 {
@@ -92,18 +90,15 @@ body {
 .question-card {
     background: var(--white);
     padding: 2rem;
-    /* Increased padding */
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     margin-bottom: 1.5rem;
     border: 1px solid rgba(0, 0, 0, 0.03);
-    /* Subtle border */
     border-left: 4px solid var(--primary-color);
 }
 
 .question-text {
     font-weight: 600;
-    /* Slightly bolder */
     margin-bottom: 1.5rem;
     font-size: 1.15rem;
     color: #333;
@@ -113,7 +108,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    /* Increased gap */
 }
 
 .rating-option {
@@ -122,7 +116,6 @@ body {
     padding: 1rem;
     border: 1px solid #eee;
     border-radius: 12px;
-    /* More rounded */
     cursor: pointer;
     transition: var(--transition);
     background-color: #fff;
@@ -132,7 +125,6 @@ body {
     background-color: var(--primary-light);
     border-color: var(--primary-color);
     transform: translateY(-2px);
-    /* Subtle lift */
     box-shadow: 0 4px 12px rgba(0, 150, 136, 0.1);
 }
 
@@ -196,15 +188,12 @@ body {
     gap: 1rem;
     margin-top: 3rem;
     justify-content: center;
-    /* Center buttons */
 }
 
 .navigation-buttons button {
     flex: 0 0 150px;
-    /* Fixed width buttons */
     padding: 0.8rem 1.5rem;
     border-radius: 50px;
-    /* Pill shape */
     font-weight: 600;
     border: none;
     cursor: pointer;
@@ -308,7 +297,6 @@ body {
     border-bottom: 1px solid #eee;
     padding-bottom: 0;
     justify-content: center;
-    /* Center tabs */
 }
 
 .tab-btn {
