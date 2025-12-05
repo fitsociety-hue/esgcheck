@@ -300,7 +300,7 @@ function renderItemAnalysis(data) {
                 let count = 0;
 
                 data.forEach(row => {
-                    const val = Number(row[ind.id]);
+                    const val = Number(row[`${ind.id}_rating`]);
                     if (!isNaN(val) && val > 0) {
                         sum += val;
                         count++;
