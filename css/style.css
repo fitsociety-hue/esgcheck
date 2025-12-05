@@ -20,64 +20,6 @@
 
     .logo-area {
         margin-bottom: 3rem;
-    }
-
-    .logo-icon {
-        width: 80px;
-        height: 80px;
-        background: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        color: var(--primary-color);
-    }
-
-    .logo-area h1 {
-        font-size: 2rem;
-        color: #1a1a1a;
-        margin-bottom: 1rem;
-        line-height: 1.3;
-        font-weight: 700;
-    }
-
-    .logo-area h1 span {
-        color: var(--primary-color);
-    }
-
-    .subtitle {
-        color: #555;
-        margin-bottom: 2rem;
-        font-size: 1.1rem;
-        line-height: 1.6;
-    }
-
-    .card-container {
-        display: flex;
-        gap: 1.5rem;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    @media (max-width: 600px) {
-        .card-container {
-            flex-direction: column;
-        }
-    }
-
-    .action-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        flex: 1;
-        text-align: left;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
         color: inherit;
         border: 1px solid transparent;
         display: flex;
