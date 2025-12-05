@@ -241,47 +241,57 @@ function renderRadarChart(averages) {
 }
 
 function renderRecentTable(data) {
-    const tableBody = document.getElementById('recent-table-body');
-    tableBody.innerHTML = '';
-    // Show last 10 entries reversed
-    data.slice(-10).reverse().forEach(row => {
+    const tbody = document.getElementById('recent-table-body');
+    const noDataMsg = document.getElementById('no-data-message');
+    tbody.innerHTML = '';
+
+    if (!data || data.length === 0) {
+        noDataMsg.style.display = 'block';
+        return;
+    }
+
+    noDataMsg.style.display = 'none';
+
+    // Sort by timestamp desc
+    const sortedData = [...data].sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+    const recentData = sortedData.slice(0, 10);
+
+    recentData.forEach(row => {
         const tr = document.createElement('tr');
-        let dateStr = row['Timestamp'];
-        try {
-            const date = new Date(row['Timestamp']);
-            dateStr = date.toLocaleDateString();
-        } catch (e) { }
 
-        // Calculate individual E/S/G scores for this user
-        // Note: The sheet might not have pre-calculated E/S/G columns per user unless we added them.
-        // We can calculate them on the fly if needed, but for now let's check if they exist or calculate.
-        // The current sheet structure likely has 'Total Score' but maybe not E/S/G split.
-        // Let's calculate them for the table.
-
-        const userScores = { E: 0, S: 0, G: 0 };
-        const userCounts = { E: 0, S: 0, G: 0 };
+        // Calculate E/S/G scores for this row
+        let scores = { E: 0, S: 0, G: 0 };
+        let counts = { E: 0, S: 0, G: 0 };
 
         ESG_CATEGORIES.forEach(cat => {
             const ratingKey = `${cat.id}_rating`;
             const score = Number(row[ratingKey]);
             if (!isNaN(score) && score > 0) {
-                userScores[cat.id] = score; // This is category average if the sheet stores it as such
-                // Wait, the sheet stores "E_rating", "S_rating", "G_rating" which are averages for that category for that user.
-                // Based on app.js submitUserInfo:
-                // formData[cat.id + '_rating'] = (catScore / cat.middleCategories.length).toFixed(2);
-                // So yes, row['E_rating'] is the average score for E.
+                scores[cat.id] += score;
+                counts[cat.id]++;
             }
         });
 
+        const rowAvg = {
+            E: counts.E ? (scores.E / counts.E).toFixed(1) : 0,
+            S: counts.S ? (scores.S / counts.S).toFixed(1) : 0,
+            G: counts.G ? (scores.G / counts.G).toFixed(1) : 0
+        };
+
+        // Handle keys (case-insensitive check)
+        const name = row.name || row.Name || row['성명'] || '-';
+        const dept = row.department || row.Department || row['부서'] || '-';
+        const date = row.Timestamp ? new Date(row.Timestamp).toLocaleDateString() : '-';
+
         tr.innerHTML = `
-            <td>${dateStr}</td>
-            <td>${row['Department'] || '-'}</td>
-            <td>${row['Name'] || '-'}</td>
-            <td>${row['E_rating'] || 0}</td>
-            <td>${row['S_rating'] || 0}</td>
-            <td>${row['G_rating'] || 0}</td>
+            <td>${date}</td>
+            <td>${dept}</td>
+            <td>${name}</td>
+            <td>${rowAvg.E}</td>
+            <td>${rowAvg.S}</td>
+            <td>${rowAvg.G}</td>
         `;
-        tableBody.appendChild(tr);
+        tbody.appendChild(tr);
     });
 }
 
@@ -347,58 +357,60 @@ function renderItemAnalysis(data) {
 
 // --- 3. Team Analysis ---
 function renderTeamAnalysis(data) {
-    // Group data by Department
+    const container = document.getElementById('team-analysis-container');
+    container.innerHTML = '';
+
     const teams = {};
 
     data.forEach(row => {
-        const dept = row['Department'] || '미지정';
+        const dept = row.department || row.Department || row['부서'] || '미지정';
         if (!teams[dept]) {
-            teams[dept] = {
-                count: 0,
-                totalScoreSum: 0,
-                eSum: 0,
-                sSum: 0,
-                gSum: 0
-            };
+            teams[dept] = { count: 0, scores: { E: 0, S: 0, G: 0 }, counts: { E: 0, S: 0, G: 0 }, totalSum: 0 };
         }
-
         teams[dept].count++;
-        teams[dept].totalScoreSum += (Number(row['Total Score']) || 0);
-        teams[dept].eSum += (Number(row['E_rating']) || 0);
-        teams[dept].sSum += (Number(row['S_rating']) || 0);
-        teams[dept].gSum += (Number(row['G_rating']) || 0);
+
+        // Calculate row total score
+        let rowTotal = Number(row['Total Score']);
+        if (isNaN(rowTotal)) rowTotal = 0;
+        teams[dept].totalSum += rowTotal;
+
+        ESG_CATEGORIES.forEach(cat => {
+            const ratingKey = `${cat.id}_rating`;
+            const score = Number(row[ratingKey]);
+            if (!isNaN(score) && score > 0) {
+                teams[dept].scores[cat.id] += score;
+                teams[dept].counts[cat.id]++;
+            }
+        });
     });
 
-    // Render Table
-    const container = document.getElementById('team-analysis-container');
-    if (!container) return;
-
     let html = `
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>부서명</th>
-                    <th>참여 인원</th>
-                    <th>평균 총점</th>
-                    <th>환경 (E)</th>
-                    <th>사회 (S)</th>
-                    <th>지배구조 (G)</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>부서명</th>
+                        <th>참여 인원</th>
+                        <th>평균 총점</th>
+                        <th>환경 (E)</th>
+                        <th>사회 (S)</th>
+                        <th>지배구조 (G)</th>
+                    </tr>
+                </thead>
+                <tbody>
     `;
 
     Object.keys(teams).forEach(dept => {
-        const team = teams[dept];
-        const avgTotal = (team.totalScoreSum / team.count).toFixed(1);
-        const avgE = (team.eSum / team.count).toFixed(1);
-        const avgS = (team.sSum / team.count).toFixed(1);
-        const avgG = (team.gSum / team.count).toFixed(1);
+        const t = teams[dept];
+        const avgTotal = (t.totalSum / t.count).toFixed(1);
+        const avgE = t.counts.E ? (t.scores.E / t.counts.E).toFixed(1) : 0;
+        const avgS = t.counts.S ? (t.scores.S / t.counts.S).toFixed(1) : 0;
+        const avgG = t.counts.G ? (t.scores.G / t.counts.G).toFixed(1) : 0;
 
         html += `
             <tr>
                 <td>${dept}</td>
-                <td>${team.count}명</td>
+                <td>${t.count}명</td>
                 <td>${avgTotal}</td>
                 <td>${avgE}</td>
                 <td>${avgS}</td>
@@ -407,7 +419,7 @@ function renderTeamAnalysis(data) {
         `;
     });
 
-    html += '</tbody></table>';
+    html += `</tbody></table></div>`;
     container.innerHTML = html;
 }
 
@@ -527,4 +539,35 @@ function copyJson() {
     output.select();
     document.execCommand('copy');
     alert('JSON 코드가 복사되었습니다. js/data.js 파일에 붙여넣으세요.');
+}
+
+// --- Export Functions ---
+function downloadPDF(elementId, filename) {
+    const element = document.getElementById(elementId);
+    const opt = {
+        margin: 10,
+        filename: `${filename}_${new Date().toISOString().slice(0, 10)}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+
+function downloadWord(elementId, filename) {
+    const element = document.getElementById(elementId);
+    const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+        "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+        "xmlns='http://www.w3.org/TR/REC-html40'>" +
+        "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+    const footer = "</body></html>";
+    const sourceHTML = header + element.innerHTML + footer;
+
+    const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+    const fileDownload = document.createElement("a");
+    document.body.appendChild(fileDownload);
+    fileDownload.href = source;
+    fileDownload.download = `${filename}_${new Date().toISOString().slice(0, 10)}.doc`;
+    fileDownload.click();
+    document.body.removeChild(fileDownload);
 }

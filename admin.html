@@ -42,6 +42,7 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
@@ -171,7 +172,12 @@
                 <div class="card table-card">
                     <div class="card-header-row">
                         <h3>참여 현황</h3>
-                        <span class="badge-gray">최신순</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <button onclick="downloadPDF('tab-comprehensive', '종합결과')" class="btn-small">PDF 저장</button>
+                            <button onclick="downloadWord('tab-comprehensive', '종합결과')" class="btn-small">Word
+                                저장</button>
+                            <span class="badge-gray">최신순</span>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="data-table">
@@ -219,7 +225,14 @@
         <!-- Tab Content: Team Analysis -->
         <div id="tab-team-analysis" class="tab-content" style="display: none;">
             <div class="card">
-                <h3>부서별 참여 및 점수 현황</h3>
+                <div class="card-header-row"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>부서별 참여 및 점수 현황</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="downloadPDF('tab-team-analysis', '팀별분석')" class="btn-small">PDF 저장</button>
+                        <button onclick="downloadWord('tab-team-analysis', '팀별분석')" class="btn-small">Word 저장</button>
+                    </div>
+                </div>
                 <div id="team-analysis-container"></div>
             </div>
         </div>
@@ -227,7 +240,14 @@
         <!-- Tab Content: Workshop Suggestions -->
         <div id="tab-suggestions" class="tab-content" style="display: none;">
             <div class="card">
-                <h3>ESG 중장기 발전계획 수립 워크숍 제언</h3>
+                <div class="card-header-row"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>ESG 중장기 발전계획 수립 워크숍 제언</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="downloadPDF('tab-suggestions', '워크숍제언')" class="btn-small">PDF 저장</button>
+                        <button onclick="downloadWord('tab-suggestions', '워크숍제언')" class="btn-small">Word 저장</button>
+                    </div>
+                </div>
                 <p style="color: #666; margin-bottom: 2rem;">진단 결과를 바탕으로 한 영역별 맞춤형 제언입니다.</p>
                 <div id="suggestions-container"></div>
             </div>
