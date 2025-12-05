@@ -18,19 +18,52 @@
         <section id="landing-page" class="page active">
             <div class="hero-content">
                 <div class="logo-area">
-                    <h1>ESG 자체진단표</h1>
-                    <p class="subtitle">강동어울림복지관 지속가능경영을 위한 첫걸음</p>
+                    <div class="logo-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                        </svg>
+                    </div>
+                    <h1>강동어울림복지관<br>ESG 경영 자체진단</h1>
+                    <p class="subtitle">지속가능한 복지관 운영을 위한<br>ESG 경영 중장기 발전계획 수립의 첫걸음입니다.</p>
                 </div>
-                <div class="info-card">
-                    <h3>진단 안내</h3>
-                    <p>본 진단은 2026년 ESG 경영 도입을 위한 기초 자료로 활용됩니다.</p>
-                    <ul class="info-list">
-                        <li><strong>참여 대상:</strong> 전 직원 (약 40명)</li>
-                        <li><strong>소요 시간:</strong> 약 10분</li>
-                        <li><strong>평가 방식:</strong> 우수 / 양호 / 보통 / 미흡</li>
-                    </ul>
+
+                <div class="card-container">
+                    <!-- Diagnosis Card -->
+                    <div class="action-card" onclick="startDiagnosis()">
+                        <div class="card-header">
+                            <h3>자가진단 참여하기</h3>
+                            <div class="icon-box user-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="card-desc">복지관 직원용<br>개인별 ESG 인식 및 실천도 진단</p>
+                        <div class="card-link">시작하기 →</div>
+                    </div>
+
+                    <!-- Admin Card -->
+                    <a href="admin.html" class="action-card admin-card-link">
+                        <div class="card-header">
+                            <h3><span class="highlight">관리자</span> 대시보드</h3>
+                            <div class="icon-box admin-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="card-desc"><span class="highlight-bg">관리자</span> 전용<br>실시간 응답 현황 및 결과 분석</p>
+                        <div class="card-link">확인하기 →</div>
+                    </a>
                 </div>
-                <button class="btn-primary" onclick="startDiagnosis()">진단 시작하기</button>
             </div>
         </section>
 
