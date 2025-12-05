@@ -1,3 +1,10 @@
+const CHECK_OPTIONS = [
+    { value: "know", label: "알고 있음" },
+    { value: "dont_know", label: "알지 못함" },
+    { value: "doing", label: "하고 있음" },
+    { value: "not_doing", label: "하지 않음" }
+];
+
 const ESG_CATEGORIES = [
     {
         "id": "E",
@@ -479,11 +486,4 @@ const ESG_CATEGORIES = [
             }
         ]
     }
-];
-
-const CHECK_OPTIONS = [
-    { value: "know", label: "알고 있음" },
-    { value: "dont_know", label: "알지 못함" },
-    { value: "doing", label: "하고 있음" },
-    { value: "not_doing", label: "하지 않음" }
 ];
