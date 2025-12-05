@@ -8,7 +8,7 @@ const ESG_CATEGORIES = [
                 "title": "중분류",
                 "indicators": [
                     {
-                        "id": "E_1",
+                        "id": "e_1_1",
                         "title": "진단지표",
                         "contents": [
                             "진단내용",
@@ -22,7 +22,7 @@ const ESG_CATEGORIES = [
                 "title": "[E1]\r\n친환경 경영",
                 "indicators": [
                     {
-                        "id": "E_1",
+                        "id": "e1_1",
                         "title": "[E1-1]\r\n지역사회가 공감하는 목표수립 과정",
                         "contents": [
                             "① 환경경영을 위한 친환경, 사회적 가치실현을 위 한 의사결정과정을 종사자 및 이용자와 함께하고 있음.",
@@ -36,7 +36,7 @@ const ESG_CATEGORIES = [
                 "title": "[E2]\r\n복지관의 역할 및 대응",
                 "indicators": [
                     {
-                        "id": "E_1",
+                        "id": "e2_1",
                         "title": "[E2-1]\r\n복지관의 가치 실현",
                         "contents": [
                             "① ESG 환경경영 목표 및 체계에 복지관의 사회적 책임, 가치가 반영되어 있음.",
@@ -51,7 +51,7 @@ const ESG_CATEGORIES = [
                 "title": "[E3]\r\n탄소배출감소",
                 "indicators": [
                     {
-                        "id": "E_1",
+                        "id": "e3_1",
                         "title": "[E3-1]\r\n효율적 에너지 사용 시스템 구축",
                         "contents": [
                             "① 난방(18~20˚c) 및 냉방(26~28˚c)관리를 효율적 으로 하고 있음.",
@@ -65,7 +65,7 @@ const ESG_CATEGORIES = [
                 "title": "[E4]\r\n자원재순환",
                 "indicators": [
                     {
-                        "id": "E_1",
+                        "id": "e4_1",
                         "title": "[E4-1]\r\n자원재순환 시스템 구축 및 실천",
                         "contents": [
                             "① 폐기물 배출 감소를 위한 정책이 있음.",
@@ -80,7 +80,7 @@ const ESG_CATEGORIES = [
                 "title": "[E5]\r\n환경 인식강화",
                 "indicators": [
                     {
-                        "id": "E_1",
+                        "id": "e5_1",
                         "title": "[E5-1]\r\n지역사회 인식, 행동변화",
                         "contents": [
                             "① 환경교육에 대한 정책이 있음.",
@@ -101,7 +101,7 @@ const ESG_CATEGORIES = [
                 "title": "[S1]\r\n노동관행",
                 "indicators": [
                     {
-                        "id": "S_1",
+                        "id": "s1_1",
                         "title": "[S1-1]\r\n노동관행 체계구축",
                         "contents": [
                             "① 노동이슈에 대한 담당부서 또는 실무책임자의 역 할과 책임이 명확하게 명문화되어 있음.",
@@ -110,7 +110,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_2",
+                        "id": "s1_2",
                         "title": "[S1-2]\r\n공정한 채용",
                         "contents": [
                             "① 운영규정에 의한 인사위원회를 구성하고, 직원을 채용하고 있음.",
@@ -121,7 +121,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_3",
+                        "id": "s1_3",
                         "title": "[S1-3]\r\n직원역량강화",
                         "contents": [
                             "① 교육에 대한 직원의 욕구조사 또는 역량분석을 실시하고 있음.",
@@ -131,7 +131,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_4",
+                        "id": "s1_4",
                         "title": "[S1-4]\r\n직원복지",
                         "contents": [
                             "① 직원의 복무규정이 마련되어 있음.",
@@ -148,7 +148,7 @@ const ESG_CATEGORIES = [
                 "title": "[S2]\r\n안전보건",
                 "indicators": [
                     {
-                        "id": "S_1",
+                        "id": "s2_1",
                         "title": "[S2-1]\r\n안전관리체계구축",
                         "contents": [
                             "① 시설특성에 맞게 안전관리 계획서를 마련하고 있음.",
@@ -159,7 +159,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_2",
+                        "id": "s2_2",
                         "title": "[S2-2]\r\n안전사고 대응 체계",
                         "contents": [
                             "① 이용자를 위한 응급대처 매뉴얼이 있음.",
@@ -172,7 +172,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_3",
+                        "id": "s2_3",
                         "title": "[S2-3]\r\n중대재해 예방",
                         "contents": [
                             "① 안전보건 관리체계를 구축함.",
@@ -190,7 +190,7 @@ const ESG_CATEGORIES = [
                 "title": "[S3]\r\n인권존중 및 보호",
                 "indicators": [
                     {
-                        "id": "S_1",
+                        "id": "s3_1",
                         "title": "[S3-1]\r\n인권 경영체계 구축",
                         "contents": [
                             "① 인권 존중 및 보호를 공개적으로 지지하고 있음.",
@@ -201,7 +201,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_2",
+                        "id": "s3_2",
                         "title": "[S3-2]\r\n학대예방 및 인권보장",
                         "contents": [
                             "① 이용자에게 인권침해 예방과 대응방법에 대한 정보 를 제공하고 있음.",
@@ -212,7 +212,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_3",
+                        "id": "s3_3",
                         "title": "[S3-3]\r\n종사자 감정노동 보호",
                         "contents": [
                             "① 종사자에 대한 폭력 및 폭언과 관련된 법적 책임을 알고 있고, 관련 규정이 있음.",
@@ -222,7 +222,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_4",
+                        "id": "s3_4",
                         "title": "[S3-4]\r\n인권 모니터링 및 평가",
                         "contents": [
                             "① 정기적으로 직원대상 인권실태 설문조사를 실시함.",
@@ -232,7 +232,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_5",
+                        "id": "s3_5",
                         "title": "[S3-5]\r\n사회적 불평등 계층 권리증진 및 보호실천",
                         "contents": [
                             "① 아동권리보호 (UN아동권리협약에 따른 4가지) 기 본권을  이해하고  아동  당사자  와  지역주민에게 알리고 있음. (1. 생존할 권리, 2. 보호받을 권 리, 3. 발달할 권리, 4. 참여할 권리)",
@@ -247,7 +247,7 @@ const ESG_CATEGORIES = [
                 "title": "[S4]\r\n이용자 만족 및 권리",
                 "indicators": [
                     {
-                        "id": "S_1",
+                        "id": "s4_1",
                         "title": "[S4-1]\r\n이용자 만족경영 체계구축",
                         "contents": [
                             "① 고객만족(이용자만족)을 위한 고객헌장, 지침 등이 공개되어 있음.",
@@ -258,7 +258,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_2",
+                        "id": "s4_2",
                         "title": "[S4-2]\r\n편의시설의 적절성",
                         "contents": [
                             "① 편의시설이 법적 규정대로 설치되어 있음.",
@@ -268,7 +268,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_3",
+                        "id": "s4_3",
                         "title": "[S4-3]\r\n고충처리 대응체계 구축",
                         "contents": [
                             "① 이용자 고충처리 규정이 마련되어 있음.",
@@ -277,7 +277,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_4",
+                        "id": "s4_4",
                         "title": "[S4-4]\r\n개인정보 보호 및 비밀보장",
                         "contents": [
                             "① 개인정보의 비밀보장 관련 규정이나 지침이 명문화 되어 있음.",
@@ -287,7 +287,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_5",
+                        "id": "s4_5",
                         "title": "[S4-5]\r\n사회서비스 사전 고지 및 동의",
                         "contents": [
                             "① 사회복지서비스에 관한 정보를 충분하게 제공함.",
@@ -301,7 +301,7 @@ const ESG_CATEGORIES = [
                 "title": "[S5]\r\n동반성장 및 지역상생",
                 "indicators": [
                     {
-                        "id": "S_1",
+                        "id": "s5_1",
                         "title": "[S5-1]\r\n지역사회 민관협력 파트너쉽",
                         "contents": [
                             "① 지역주민들의 다양한 욕구에 맞는 서비스를 제공하 기 위해 지역의 민･관기관의 참여가 활발히 이루어 지고 있음.",
@@ -310,7 +310,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_2",
+                        "id": "s5_2",
                         "title": "[S5-2]\r\n기업 및 지역 단체와의 사회공헌활동",
                         "contents": [
                             "① 지역 내 기업 및 지역단체의 구성원과 다양한 자원 봉사활동을 진행하고 있음.",
@@ -319,7 +319,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "S_3",
+                        "id": "s5_3",
                         "title": "[S5-3]\r\n책임감 있는 공급망 관리",
                         "contents": [
                             "① 업체와 계약 시 법규위반 여부를 검토함.",
@@ -340,7 +340,7 @@ const ESG_CATEGORIES = [
                 "title": "[G1] ESG\r\n관리체계 구축",
                 "indicators": [
                     {
-                        "id": "G_1",
+                        "id": "g1_1",
                         "title": "[G1-1]\r\nESG 가이드라인 및 정책",
                         "contents": [
                             "① 기관의 미션・비전・핵심가치・전략 등에 ESG 내용 (가치) 반영하고 있음.",
@@ -350,7 +350,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_2",
+                        "id": "g1_2",
                         "title": "[G1-2]\r\nESG 활동의 효율적 관리",
                         "contents": [
                             "① 이사회 또는 운영위원회에 ESG 관련 이슈 필수안건 으로 상정함.",
@@ -364,7 +364,7 @@ const ESG_CATEGORIES = [
                 "title": "[G2]\r\n위원회 구성 및 활동",
                 "indicators": [
                     {
-                        "id": "G_1",
+                        "id": "g2_1",
                         "title": "[G2-1]\r\n운영위원회의 독립성 및 구성, 활동",
                         "contents": [
                             "① 운영위원회 외부위원 비율을 60% 이상으로 구성함.",
@@ -373,7 +373,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_2",
+                        "id": "g2_2",
                         "title": "[G2-2]\r\n위원회 구성 현황",
                         "contents": [
                             "① 인사위원회가 존재함.",
@@ -387,7 +387,7 @@ const ESG_CATEGORIES = [
                 "title": "[G3]\r\n이해관계자 참여 및 소통",
                 "indicators": [
                     {
-                        "id": "G_1",
+                        "id": "g3_1",
                         "title": "[G3-1]\r\nESG 정보 공시",
                         "contents": [
                             "① 기관 연간 운영보고서 등 발간 시 ESG실천 내용을 포함하여 보고하고 있음.",
@@ -395,7 +395,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_2",
+                        "id": "g3_2",
                         "title": "[G3-2]\r\n이해관계자 식별 및 소통",
                         "contents": [
                             "① 이해관계자별 소통채널이 존재함.",
@@ -403,7 +403,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_3",
+                        "id": "g3_3",
                         "title": "[G3-3]\r\n자원봉사자 관리",
                         "contents": [
                             "① 자원봉사자관리(모집, 교육, 배치, 포상 등)에 관 한 규정을 보유하고 있음.",
@@ -412,7 +412,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_4",
+                        "id": "g3_4",
                         "title": "[G3-4]\r\n후원자 관리",
                         "contents": [
                             "① 후원개발, 관리에 대한 사업계획 수립하고 있음.",
@@ -427,7 +427,7 @@ const ESG_CATEGORIES = [
                 "title": "[G4]\r\n청렴윤리",
                 "indicators": [
                     {
-                        "id": "G_1",
+                        "id": "g4_1",
                         "title": "[G4-1]\r\n윤리경영 체계구축",
                         "contents": [
                             "① 윤리헌장 혹은 윤리강령을 보유함.",
@@ -438,7 +438,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_2",
+                        "id": "g4_2",
                         "title": "[G4-2]\r\n반부패 예방 및 청렴강화",
                         "contents": [
                             "① 모든 직원을 대상으로 청렴윤리(반부패)교육을 실 시하고 있음.",
@@ -448,7 +448,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_3",
+                        "id": "g4_3",
                         "title": "[G4-3]\r\n청렴윤리 모니터링 및 평가",
                         "contents": [
                             "① 정기적으로 시설의 청렴도 및 윤리경영 수준을 측 정할 수 있는 설문조사를 실시하고 있음.",
@@ -456,7 +456,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_4",
+                        "id": "g4_4",
                         "title": "[G4-4]\r\n회계의 투명한 관리",
                         "contents": [
                             "① 사회복지시설 정보시스템 회계처리를 하고 있음.",
@@ -467,7 +467,7 @@ const ESG_CATEGORIES = [
                         ]
                     },
                     {
-                        "id": "G_5",
+                        "id": "g4_5",
                         "title": "[G4-5]\r\n법/규제 미준수 및 위반",
                         "contents": [
                             "① 지난 3년간 법/규제 위반으로 과태료, 과징금, 이 행 강제금 존재",
@@ -479,4 +479,11 @@ const ESG_CATEGORIES = [
             }
         ]
     }
+];
+
+const CHECK_OPTIONS = [
+    { value: "know", label: "알고 있음" },
+    { value: "dont_know", label: "알지 못함" },
+    { value: "doing", label: "하고 있음" },
+    { value: "not_doing", label: "하지 않음" }
 ];
