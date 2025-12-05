@@ -410,27 +410,35 @@ body {
     color: white;
     position: relative;
     overflow: hidden;
-    border-radius: 16px;
-    padding: 1.5rem;
+    border-radius: 24px;
+    padding: 1.8rem;
     box-shadow: 0 10px 20px rgba(0, 150, 136, 0.2);
     border-top: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .card-total h3 {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
+    font-size: 1.1rem;
     margin-bottom: 0.5rem;
     font-weight: 500;
+    position: relative;
+    z-index: 2;
 }
 
 .card-total .stat-value-large {
-    font-size: 2.8rem;
+    font-size: 3rem;
     font-weight: 800;
     color: white;
+    position: relative;
+    z-index: 2;
+    line-height: 1.2;
 }
 
 .card-total .unit {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: normal;
     margin-left: 0.3rem;
     opacity: 0.9;
@@ -439,17 +447,24 @@ body {
 
 .card-total .icon-bg {
     position: absolute;
-    right: -10px;
-    bottom: -10px;
-    opacity: 0.15;
-    transform: rotate(-15deg);
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.25;
     color: white;
+    width: auto;
+    height: auto;
+}
+
+.card-total .icon-bg svg {
+    width: 80px;
+    height: 80px;
 }
 
 .btn-small {
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
-    border-radius: 6px;
+    border-radius: 8px;
     background: white;
     border: 1px solid #ddd;
     cursor: pointer;
@@ -465,11 +480,14 @@ body {
 
 .card-score {
     background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
+    border-radius: 24px;
+    padding: 1.8rem;
     box-shadow: var(--shadow);
-    border-top: 4px solid #ddd;
+    border-top: 5px solid #ddd;
     transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .card-score:hover {
@@ -484,13 +502,13 @@ body {
 }
 
 .card-score .score-value {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-weight: 800;
     color: #333;
 }
 
 .card-score .max-score {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #aaa;
     font-weight: normal;
 }
@@ -510,13 +528,13 @@ body {
 /* Dashboard Main Grid */
 .dashboard-main-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1.6fr;
     gap: 1.5rem;
 }
 
 .card {
     background: white;
-    border-radius: 16px;
+    border-radius: 24px;
     padding: 2rem;
     box-shadow: var(--shadow);
 }
