@@ -64,6 +64,99 @@ function processData(data) {
     renderComprehensive(data);
     renderItemAnalysis(data);
     renderTeamAnalysis(data);
+    renderSuggestions(data);
+}
+
+// --- 4. Workshop Suggestions ---
+function renderSuggestions(data) {
+    const container = document.getElementById('suggestions-container');
+    if (!container) return;
+
+    // Calculate overall averages
+    let scores = { E: 0, S: 0, G: 0 };
+    let counts = { E: 0, S: 0, G: 0 };
+
+    data.forEach(row => {
+        ESG_CATEGORIES.forEach(cat => {
+            const ratingKey = `${cat.id}_rating`;
+            const score = Number(row[ratingKey]);
+            if (!isNaN(score) && score > 0) {
+                scores[cat.id] += score;
+                counts[cat.id]++;
+            }
+        });
+    });
+
+    const averages = {
+        E: counts.E ? (scores.E / counts.E) : 0,
+        S: counts.S ? (scores.S / counts.S) : 0,
+        G: counts.G ? (scores.G / counts.G) : 0
+    };
+
+    // Suggestion Logic
+    const suggestions = {
+        E: [
+            { threshold: 2.5, title: "환경 경영 체계 구축 시급", content: "환경 경영 방침을 수립하고, 에너지 사용량 모니터링 시스템을 도입해야 합니다." },
+            { threshold: 3.5, title: "친환경 캠페인 확대", content: "임직원이 참여하는 '잔반 줄이기', '플라스틱 프리' 캠페인을 정례화하여 문화를 확산하세요." },
+            { threshold: 5.0, title: "환경 리더십 강화", content: "지역사회와 연계한 환경 보호 활동을 주도하고, 탄소 중립 로드맵을 고도화하세요." }
+        ],
+        S: [
+            { threshold: 2.5, title: "기본적인 인권 경영 도입", content: "취업규칙을 점검하고, 고충 처리 채널을 활성화하여 내부 소통을 강화해야 합니다." },
+            { threshold: 3.5, title: "지역사회 공헌 프로그램 개발", content: "기관의 특성을 살린 사회공헌 프로그램을 기획하고, 자원봉사 활동을 장려하세요." },
+            { threshold: 5.0, title: "이해관계자 소통 고도화", content: "다양한 이해관계자와의 정기적인 간담회를 통해 경영 투명성을 높이고 상생 모델을 구축하세요." }
+        ],
+        G: [
+            { threshold: 2.5, title: "윤리 경영 규정 정비", content: "윤리 헌장을 제정하고, 전 직원 대상 윤리 교육을 의무화해야 합니다." },
+            { threshold: 3.5, title: "의사결정 투명성 제고", content: "위원회 운영을 활성화하고, 주요 의사결정 과정을 내부에 투명하게 공개하세요." },
+            { threshold: 5.0, title: "ESG 경영 내재화", content: "ESG 성과 지표를 KPI에 반영하고, 지속가능경영보고서를 발간하여 대외 신뢰도를 높이세요." }
+        ]
+    };
+
+    let html = '<div class="suggestions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">';
+
+    ['E', 'S', 'G'].forEach(cat => {
+        const avg = averages[cat];
+        const catName = cat === 'E' ? '환경(Environment)' : cat === 'S' ? '사회(Social)' : '지배구조(Governance)';
+        const color = cat === 'E' ? '#4caf50' : cat === 'S' ? '#2196f3' : '#ff9800';
+
+        // Find appropriate suggestion
+        let suggestion = suggestions[cat].find(s => avg < s.threshold) || suggestions[cat][suggestions[cat].length - 1];
+
+        html += `
+            <div class="card" style="border-top: 4px solid ${color};">
+                <h4 style="color: ${color}; margin-bottom: 0.5rem;">${catName} <span style="font-size: 0.9em; color: #666;">(평균 ${avg.toFixed(1)}점)</span></h4>
+                <h3 style="margin-bottom: 1rem;">${suggestion.title}</h3>
+                <p style="color: #555; line-height: 1.6;">${suggestion.content}</p>
+                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #eee;">
+                    <strong style="font-size: 0.9rem; color: #333;">추천 액션 아이템:</strong>
+                    <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.9rem; color: #666;">
+                        <li>${cat} 영역 중장기 목표 수립 워크숍 개최</li>
+                        <li>관련 우수 사례 벤치마킹</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+
+    // Add Mid-to-Long Term Planning Section
+    html += `
+        <div style="margin-top: 3rem;">
+            <h3 style="margin-bottom: 1.5rem; border-left: 4px solid #333; padding-left: 1rem;">ESG 중장기 발전계획 수립 가이드</h3>
+            <div class="card" style="background: #f8f9fa;">
+                <ol style="padding-left: 1.5rem; line-height: 1.8; color: #444;">
+                    <li><strong>현황 진단 (Current State):</strong> 현재의 ESG 수준을 객관적으로 파악합니다. (본 자가진단 활용)</li>
+                    <li><strong>비전 수립 (Visioning):</strong> 기관이 추구하는 ESG 경영의 미래상을 정의합니다.</li>
+                    <li><strong>핵심 과제 도출 (Key Issues):</strong> 비전 달성을 위해 해결해야 할 핵심 과제를 선정합니다.</li>
+                    <li><strong>로드맵 작성 (Roadmap):</strong> 단기(1년), 중기(3년), 장기(5년) 실행 계획을 수립합니다.</li>
+                    <li><strong>모니터링 및 피드백 (Feedback):</strong> 정기적인 성과 점검 및 개선 활동을 수행합니다.</li>
+                </ol>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
 }
 
 // --- 1. Comprehensive Results ---

@@ -30,7 +30,7 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 1000px;
     background-color: var(--white);
     min-height: 100vh;
     position: relative;
@@ -988,5 +988,17 @@ select:focus {
     .header-right {
         width: 100%;
         justify-content: space-between;
+    }
+}
+/* Desktop Responsive Styles */
+@media (min-width: 1024px) {
+    .app-container {
+        max-width: 1000px;
+    }
+    .card-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 900px;
     }
 }
