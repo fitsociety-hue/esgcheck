@@ -73,24 +73,21 @@ function renderSuggestions(data) {
     if (!container) return;
 
     // Calculate overall averages
-    let scores = { E: 0, S: 0, G: 0 };
-    let counts = { E: 0, S: 0, G: 0 };
+    let totalScores = { E: 0, S: 0, G: 0 };
+    let totalCounts = 0;
 
     data.forEach(row => {
-        ESG_CATEGORIES.forEach(cat => {
-            const ratingKey = `${cat.id}_rating`;
-            const score = Number(row[ratingKey]);
-            if (!isNaN(score) && score > 0) {
-                scores[cat.id] += score;
-                counts[cat.id]++;
-            }
-        });
+        const rowScores = calculateRowScores(row);
+        if (rowScores.E > 0) totalScores.E += rowScores.E;
+        if (rowScores.S > 0) totalScores.S += rowScores.S;
+        if (rowScores.G > 0) totalScores.G += rowScores.G;
+        if (rowScores.E > 0 || rowScores.S > 0 || rowScores.G > 0) totalCounts++;
     });
 
     const averages = {
-        E: counts.E ? (scores.E / counts.E) : 0,
-        S: counts.S ? (scores.S / counts.S) : 0,
-        G: counts.G ? (scores.G / counts.G) : 0
+        E: totalCounts ? (totalScores.E / totalCounts) : 0,
+        S: totalCounts ? (totalScores.S / totalCounts) : 0,
+        G: totalCounts ? (totalScores.G / totalCounts) : 0
     };
 
     // Suggestion Logic
@@ -231,6 +228,31 @@ function getGapSuggestion(percents) {
     }
 }
 
+// --- Helper: Calculate Scores per Row ---
+function calculateRowScores(row) {
+    const scores = { E: 0, S: 0, G: 0 };
+    const counts = { E: 0, S: 0, G: 0 };
+
+    ESG_CATEGORIES.forEach(cat => {
+        cat.middleCategories.forEach(mid => {
+            mid.indicators.forEach(ind => {
+                const val = Number(row[`${ind.id}_rating`]);
+                if (!isNaN(val) && val > 0) {
+                    scores[cat.id] += val;
+                    counts[cat.id]++;
+                }
+            });
+        });
+    });
+
+    return {
+        E: counts.E ? (scores.E / counts.E) : 0,
+        S: counts.S ? (scores.S / counts.S) : 0,
+        G: counts.G ? (scores.G / counts.G) : 0,
+        Total: (counts.E + counts.S + counts.G) ? ((scores.E + scores.S + scores.G) / (counts.E + counts.S + counts.G)) : 0
+    };
+}
+
 // --- 1. Comprehensive Results ---
 function renderComprehensive(data) {
     // 1. Total Participants
@@ -241,26 +263,21 @@ function renderComprehensive(data) {
     document.getElementById('last-update-time').textContent = now.toLocaleTimeString();
 
     // 2. E/S/G Averages
-    const scores = { E: 0, S: 0, G: 0 };
-    const counts = { E: 0, S: 0, G: 0 };
+    let totalScores = { E: 0, S: 0, G: 0 };
+    let totalCounts = 0;
 
-    // Calculate sums
     data.forEach(row => {
-        ESG_CATEGORIES.forEach(cat => {
-            const ratingKey = `${cat.id}_rating`;
-            const score = Number(row[ratingKey]);
-            if (!isNaN(score) && score > 0) {
-                scores[cat.id] += score;
-                counts[cat.id]++;
-            }
-        });
+        const rowScores = calculateRowScores(row);
+        if (rowScores.E > 0) totalScores.E += rowScores.E;
+        if (rowScores.S > 0) totalScores.S += rowScores.S;
+        if (rowScores.G > 0) totalScores.G += rowScores.G;
+        if (rowScores.E > 0 || rowScores.S > 0 || rowScores.G > 0) totalCounts++;
     });
 
-    // Calculate averages
     const averages = {
-        E: counts.E ? (scores.E / counts.E).toFixed(1) : 0,
-        S: counts.S ? (scores.S / counts.S).toFixed(1) : 0,
-        G: counts.G ? (scores.G / counts.G).toFixed(1) : 0
+        E: totalCounts ? (totalScores.E / totalCounts).toFixed(1) : 0,
+        S: totalCounts ? (totalScores.S / totalCounts).toFixed(1) : 0,
+        G: totalCounts ? (totalScores.G / totalCounts).toFixed(1) : 0
     };
 
     document.getElementById('avg-score-e').textContent = averages.E;
@@ -330,25 +347,7 @@ function renderRecentTable(data) {
 
     recentData.forEach(row => {
         const tr = document.createElement('tr');
-
-        // Calculate E/S/G scores for this row
-        let scores = { E: 0, S: 0, G: 0 };
-        let counts = { E: 0, S: 0, G: 0 };
-
-        ESG_CATEGORIES.forEach(cat => {
-            const ratingKey = `${cat.id}_rating`;
-            const score = Number(row[ratingKey]);
-            if (!isNaN(score) && score > 0) {
-                scores[cat.id] += score;
-                counts[cat.id]++;
-            }
-        });
-
-        const rowAvg = {
-            E: counts.E ? (scores.E / counts.E).toFixed(1) : 0,
-            S: counts.S ? (scores.S / counts.S).toFixed(1) : 0,
-            G: counts.G ? (scores.G / counts.G).toFixed(1) : 0
-        };
+        const rowScores = calculateRowScores(row); // Use helper
 
         // Handle keys (case-insensitive check)
         const name = row.name || row.Name || row['성명'] || '-';
@@ -359,9 +358,9 @@ function renderRecentTable(data) {
             <td>${date}</td>
             <td>${dept}</td>
             <td>${name}</td>
-            <td>${rowAvg.E}</td>
-            <td>${rowAvg.S}</td>
-            <td>${rowAvg.G}</td>
+            <td>${rowScores.E.toFixed(1)}</td>
+            <td>${rowScores.S.toFixed(1)}</td>
+            <td>${rowScores.G.toFixed(1)}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -441,19 +440,15 @@ function renderTeamAnalysis(data) {
         }
         teams[dept].count++;
 
-        // Calculate row total score
+        const rowScores = calculateRowScores(row); // Use helper
+
+        if (rowScores.E > 0) { teams[dept].scores.E += rowScores.E; teams[dept].counts.E++; }
+        if (rowScores.S > 0) { teams[dept].scores.S += rowScores.S; teams[dept].counts.S++; }
+        if (rowScores.G > 0) { teams[dept].scores.G += rowScores.G; teams[dept].counts.G++; }
+
         let rowTotal = Number(row['Total Score']);
         if (isNaN(rowTotal)) rowTotal = 0;
         teams[dept].totalSum += rowTotal;
-
-        ESG_CATEGORIES.forEach(cat => {
-            const ratingKey = `${cat.id}_rating`;
-            const score = Number(row[ratingKey]);
-            if (!isNaN(score) && score > 0) {
-                teams[dept].scores[cat.id] += score;
-                teams[dept].counts[cat.id]++;
-            }
-        });
     });
 
     let html = `
