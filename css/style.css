@@ -382,25 +382,42 @@ body {
     padding: 0.6rem 1.2rem;
     border-radius: 8px;
     cursor: pointer;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    border-top: 4px solid #ddd;
-    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.btn-outline:hover {
+    background: #f8f9fa;
+    border-color: #bbb;
+    color: #333;
+}
+
+/* Summary Cards */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .card-total {
-    background: white;
-    color: #333;
+    background: var(--primary-color);
+    color: white;
     position: relative;
     overflow: hidden;
     border-radius: 16px;
     padding: 1.5rem;
-    box-shadow: var(--shadow);
-    border-top: 4px solid var(--primary-color);
+    box-shadow: 0 10px 20px rgba(0, 150, 136, 0.2);
+    border-top: none;
 }
 
 .card-total h3 {
-    color: #666;
+    color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     margin-bottom: 0.5rem;
     font-weight: 500;
@@ -409,7 +426,7 @@ body {
 .card-total .stat-value-large {
     font-size: 2.8rem;
     font-weight: 800;
-    color: #333;
+    color: white;
 }
 
 .card-total .unit {
@@ -417,16 +434,42 @@ body {
     font-weight: normal;
     margin-left: 0.3rem;
     opacity: 0.9;
-    color: #666;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .card-total .icon-bg {
     position: absolute;
     right: -10px;
     bottom: -10px;
-    opacity: 0.05;
+    opacity: 0.15;
     transform: rotate(-15deg);
-    color: var(--primary-color);
+    color: white;
+}
+
+.btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    background: white;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.btn-small:hover {
+    background: #f1f3f5;
+    color: #333;
+    border-color: #ccc;
+}
+
+.card-score {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border-top: 4px solid #ddd;
+    transition: transform 0.3s ease;
 }
 
 .card-score:hover {
@@ -458,6 +501,28 @@ body {
 
 .card-score-s {
     border-top-color: #2196f3;
+}
+
+.card-score-g {
+    border-top-color: #ff9800;
+}
+
+/* Dashboard Main Grid */
+.dashboard-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.chart-card {
+    min-height: 450px;
 }
 
 .table-card {
