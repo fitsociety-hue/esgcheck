@@ -12,6 +12,25 @@ function checkLogin() {
     }
 }
 
+// Tab Switching
+function switchTab(tabId) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    // Deactivate all tab buttons
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+    // Show selected tab content
+    document.getElementById(`tab-${tabId}`).style.display = 'block';
+    // Activate selected tab button
+    // Find the button that calls this function with this tabId
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => {
+        if (btn.getAttribute('onclick').includes(tabId)) {
+            btn.classList.add('active');
+        }
+    });
+}
+
 async function fetchData() {
     try {
         const response = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getData`);
@@ -30,22 +49,86 @@ async function fetchData() {
 }
 
 function processData(data) {
+    renderComprehensive(data);
+    renderItemAnalysis(data);
+    renderTeamAnalysis(data);
+}
+
+// --- 1. Comprehensive Results ---
+function renderComprehensive(data) {
     // 1. Total Participants
     document.getElementById('total-participants').textContent = data.length;
 
-    // 2. Average Score
-    const totalScoreSum = data.reduce((sum, row) => sum + (Number(row['Total Score']) || 0), 0);
-    const avgScore = data.length ? (totalScoreSum / data.length).toFixed(1) : 0;
-    document.getElementById('average-score').textContent = avgScore;
+    // 2. E/S/G Averages
+    const scores = { E: 0, S: 0, G: 0 };
+    const counts = { E: 0, S: 0, G: 0 };
 
-    // 3. Recent Table
+    // Calculate sums
+    data.forEach(row => {
+        ESG_CATEGORIES.forEach(cat => {
+            const ratingKey = `${cat.id}_rating`;
+            const score = Number(row[ratingKey]);
+            if (!isNaN(score) && score > 0) {
+                scores[cat.id] += score;
+                counts[cat.id]++;
+            }
+        });
+    });
+
+    // Calculate averages
+    const averages = {
+        E: counts.E ? (scores.E / counts.E).toFixed(1) : 0,
+        S: counts.S ? (scores.S / counts.S).toFixed(1) : 0,
+        G: counts.G ? (scores.G / counts.G).toFixed(1) : 0
+    };
+
+    document.getElementById('avg-score-e').textContent = averages.E;
+    document.getElementById('avg-score-s').textContent = averages.S;
+    document.getElementById('avg-score-g').textContent = averages.G;
+
+    // 3. Radar Chart
+    renderRadarChart(averages);
+
+    // 4. Recent Table
     renderRecentTable(data);
+}
 
-    // 4. Category Chart (Overall)
-    renderCategoryChart(data);
+function renderRadarChart(averages) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
 
-    // 5. Team Analysis
-    renderTeamAnalysis(data);
+    if (window.myChart) {
+        window.myChart.destroy();
+    }
+
+    window.myChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['환경 (E)', '사회 (S)', '지배구조 (G)'],
+            datasets: [{
+                label: '종합 역량 진단',
+                data: [averages.E, averages.S, averages.G],
+                backgroundColor: 'rgba(46, 125, 50, 0.2)',
+                borderColor: 'rgba(46, 125, 50, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(46, 125, 50, 1)',
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                r: {
+                    angleLines: {
+                        display: true
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 4,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
 }
 
 function renderRecentTable(data) {
@@ -57,79 +140,103 @@ function renderRecentTable(data) {
         let dateStr = row['Timestamp'];
         try {
             const date = new Date(row['Timestamp']);
-            dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            dateStr = date.toLocaleDateString();
         } catch (e) { }
+
+        // Calculate individual E/S/G scores for this user
+        // Note: The sheet might not have pre-calculated E/S/G columns per user unless we added them.
+        // We can calculate them on the fly if needed, but for now let's check if they exist or calculate.
+        // The current sheet structure likely has 'Total Score' but maybe not E/S/G split.
+        // Let's calculate them for the table.
+
+        const userScores = { E: 0, S: 0, G: 0 };
+        const userCounts = { E: 0, S: 0, G: 0 };
+
+        ESG_CATEGORIES.forEach(cat => {
+            const ratingKey = `${cat.id}_rating`;
+            const score = Number(row[ratingKey]);
+            if (!isNaN(score) && score > 0) {
+                userScores[cat.id] = score; // This is category average if the sheet stores it as such
+                // Wait, the sheet stores "E_rating", "S_rating", "G_rating" which are averages for that category for that user.
+                // Based on app.js submitUserInfo:
+                // formData[cat.id + '_rating'] = (catScore / cat.middleCategories.length).toFixed(2);
+                // So yes, row['E_rating'] is the average score for E.
+            }
+        });
 
         tr.innerHTML = `
             <td>${dateStr}</td>
-            <td>${row['Name'] || '-'}</td>
             <td>${row['Department'] || '-'}</td>
-            <td>${row['Total Score'] || 0}</td>
+            <td>${row['Name'] || '-'}</td>
+            <td>${row['E_rating'] || 0}</td>
+            <td>${row['S_rating'] || 0}</td>
+            <td>${row['G_rating'] || 0}</td>
         `;
         tableBody.appendChild(tr);
     });
 }
 
-function renderCategoryChart(data) {
-    // Calculate average for each category
-    // New structure: answers are keyed by "category_id_rating" (e.g., "env_management_rating")
+// --- 2. Item Analysis ---
+function renderItemAnalysis(data) {
+    const tableBody = document.querySelector('#item-analysis-table tbody');
+    tableBody.innerHTML = '';
 
-    const categoryScores = {};
-    const categoryCounts = {};
+    const indicatorStats = [];
+    const mainMap = { E: '환경', S: '사회', G: '지배구조' };
 
-    ESG_CATEGORIES.forEach(cat => {
-        categoryScores[cat.title] = 0;
-        categoryCounts[cat.title] = 0;
-    });
+    ESG_CATEGORIES.forEach(main => {
+        main.middleCategories.forEach(middle => {
+            middle.indicators.forEach(ind => {
+                let sum = 0;
+                let count = 0;
 
-    data.forEach(row => {
-        ESG_CATEGORIES.forEach(cat => {
-            const ratingKey = `${cat.id}_rating`;
-            const score = Number(row[ratingKey]);
+                data.forEach(row => {
+                    const val = Number(row[ind.id]);
+                    if (!isNaN(val) && val > 0) {
+                        sum += val;
+                        count++;
+                    }
+                });
 
-            if (!isNaN(score) && score > 0) {
-                categoryScores[cat.title] += score;
-                categoryCounts[cat.title]++;
-            }
+                const avg = count ? (sum / count).toFixed(2) : 0;
+
+                // Determine status
+                let status = '미흡';
+                if (avg >= 3.5) { status = '우수'; }
+                else if (avg >= 2.5) { status = '양호'; }
+                else if (avg >= 1.5) { status = '보통'; }
+
+                indicatorStats.push({
+                    code: ind.title.match(/\[(.*?)\]/)?.[1] || ind.id,
+                    main: mainMap[main.id] || main.title,
+                    middle: middle.title.replace(/\[.*?\]\s*/, '').trim(),
+                    indicator: ind.title.replace(/\[.*?\]\s*/, '').trim(),
+                    avg: avg,
+                    status: status
+                });
+            });
         });
     });
 
-    const labels = ESG_CATEGORIES.map(c => c.title);
-    const averages = ESG_CATEGORIES.map(c => {
-        const count = categoryCounts[c.title];
-        return count ? (categoryScores[c.title] / count).toFixed(2) : 0;
-    });
+    // Sort by average score (ascending as per screenshot "평균 점수순")
+    indicatorStats.sort((a, b) => a.avg - b.avg);
 
-    const ctx = document.getElementById('categoryChart').getContext('2d');
-
-    if (window.myChart) {
-        window.myChart.destroy();
-    }
-
-    window.myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: '전체 평균 점수 (4점 만점)',
-                data: averages,
-                backgroundColor: 'rgba(46, 125, 50, 0.6)',
-                borderColor: 'rgba(46, 125, 50, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 4
-                }
-            }
-        }
+    indicatorStats.forEach((stat, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${stat.code}</td>
+            <td>${stat.main}</td>
+            <td>${stat.middle}</td>
+            <td>${stat.indicator}</td>
+            <td>${stat.avg}</td>
+            <td><span class="badge ${stat.status === '미흡' ? 'badge-danger' : 'badge-success'}">${stat.status}</span></td>
+        `;
+        tableBody.appendChild(tr);
     });
 }
 
+// --- 3. Team Analysis ---
 function renderTeamAnalysis(data) {
     // Group data by Department
     const teams = {};
@@ -140,26 +247,22 @@ function renderTeamAnalysis(data) {
             teams[dept] = {
                 count: 0,
                 totalScoreSum: 0,
-                categorySums: {}
+                eSum: 0,
+                sSum: 0,
+                gSum: 0
             };
-            ESG_CATEGORIES.forEach(cat => {
-                teams[dept].categorySums[cat.id] = 0;
-            });
         }
 
         teams[dept].count++;
         teams[dept].totalScoreSum += (Number(row['Total Score']) || 0);
-
-        ESG_CATEGORIES.forEach(cat => {
-            const ratingKey = `${cat.id}_rating`;
-            const score = Number(row[ratingKey]) || 0;
-            teams[dept].categorySums[cat.id] += score;
-        });
+        teams[dept].eSum += (Number(row['E_rating']) || 0);
+        teams[dept].sSum += (Number(row['S_rating']) || 0);
+        teams[dept].gSum += (Number(row['G_rating']) || 0);
     });
 
     // Render Table
     const container = document.getElementById('team-analysis-container');
-    if (!container) return; // Guard clause if element doesn't exist yet
+    if (!container) return;
 
     let html = `
         <table class="data-table">
@@ -168,7 +271,9 @@ function renderTeamAnalysis(data) {
                     <th>부서명</th>
                     <th>참여 인원</th>
                     <th>평균 총점</th>
-                    ${ESG_CATEGORIES.map(c => `<th>${c.title.split(' ')[1]}</th>`).join('')}
+                    <th>환경 (E)</th>
+                    <th>사회 (S)</th>
+                    <th>지배구조 (G)</th>
                 </tr>
             </thead>
             <tbody>
@@ -177,16 +282,18 @@ function renderTeamAnalysis(data) {
     Object.keys(teams).forEach(dept => {
         const team = teams[dept];
         const avgTotal = (team.totalScoreSum / team.count).toFixed(1);
+        const avgE = (team.eSum / team.count).toFixed(1);
+        const avgS = (team.sSum / team.count).toFixed(1);
+        const avgG = (team.gSum / team.count).toFixed(1);
 
         html += `
             <tr>
                 <td>${dept}</td>
                 <td>${team.count}명</td>
                 <td>${avgTotal}</td>
-                ${ESG_CATEGORIES.map(cat => {
-            const avg = (team.categorySums[cat.id] / team.count).toFixed(1);
-            return `<td>${avg}</td>`;
-        }).join('')}
+                <td>${avgE}</td>
+                <td>${avgS}</td>
+                <td>${avgG}</td>
             </tr>
         `;
     });

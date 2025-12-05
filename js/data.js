@@ -87,8 +87,8 @@ const ESG_CATEGORIES = [
     },
     {
         "id": "S",
-        "title": "[S]\r\n사회",
-        "description": "",
+        "title": "Social (사회)",
+        "description": "사회적 책임, 인권 경영",
         "middleCategories": [
             {
                 "title": "[S1]\r\n노동관행",
@@ -326,8 +326,8 @@ const ESG_CATEGORIES = [
     },
     {
         "id": "G",
-        "title": "[G]\r\n거버 넌스",
-        "description": "",
+        "title": "Governance (지배구조)",
+        "description": "투명한 거버넌스, 윤리경영",
         "middleCategories": [
             {
                 "title": "[G1] ESG\r\n관리체계 구축",
