@@ -8,23 +8,9 @@ const CHECK_OPTIONS = [
 const ESG_CATEGORIES = [
     {
         "id": "E",
-        "title": "대분류",
-        "description": "",
+        "title": "Environmental (환경)",
+        "description": "환경경영, 친환경 실천",
         "middleCategories": [
-            {
-                "title": "중분류",
-                "indicators": [
-                    {
-                        "id": "e_1_1",
-                        "title": "진단지표",
-                        "contents": [
-                            "진단내용",
-                            "진단내용",
-                            "진단내용"
-                        ]
-                    }
-                ]
-            },
             {
                 "title": "[E1]\r\n친환경 경영",
                 "indicators": [
