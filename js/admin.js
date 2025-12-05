@@ -112,6 +112,51 @@ function renderSuggestions(data) {
         ]
     };
 
+    // --- Gap Analysis Logic ---
+    const gapStats = {
+        E: { total: 0, awareness: 0, action: 0, ideal: 0 },
+        S: { total: 0, awareness: 0, action: 0, ideal: 0 },
+        G: { total: 0, awareness: 0, action: 0, ideal: 0 }
+    };
+
+    data.forEach(row => {
+        ESG_CATEGORIES.forEach(cat => {
+            cat.middleCategories.forEach(mid => {
+                mid.indicators.forEach(ind => {
+                    // Checkbox data is stored in row[ind.id] as a comma-separated string
+                    // e.g. "알고 있음, 하고 있음"
+                    const val = row[ind.id] || "";
+
+                    // Determine Gap Type
+                    let type = 'unknown';
+                    if (val.includes('알지 못함')) {
+                        type = 'awareness'; // Type A: Awareness Gap
+                    } else if (val.includes('알고 있음') && !val.includes('하고 있음')) {
+                        type = 'action'; // Type B: Action Gap
+                    } else if (val.includes('알고 있음') && val.includes('하고 있음')) {
+                        type = 'ideal'; // Type D: Ideal
+                    }
+
+                    if (type !== 'unknown') {
+                        gapStats[cat.id][type]++;
+                        gapStats[cat.id].total++;
+                    }
+                });
+            });
+        });
+    });
+
+    // Calculate Percentages
+    const gapPercents = {};
+    ['E', 'S', 'G'].forEach(id => {
+        const total = gapStats[id].total || 1; // Avoid division by zero
+        gapPercents[id] = {
+            awareness: ((gapStats[id].awareness / total) * 100).toFixed(1),
+            action: ((gapStats[id].action / total) * 100).toFixed(1),
+            ideal: ((gapStats[id].ideal / total) * 100).toFixed(1)
+        };
+    });
+
     let html = '<div class="suggestions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">';
 
     ['E', 'S', 'G'].forEach(cat => {
@@ -119,7 +164,7 @@ function renderSuggestions(data) {
         const catName = cat === 'E' ? '환경(Environment)' : cat === 'S' ? '사회(Social)' : '지배구조(Governance)';
         const color = cat === 'E' ? '#4caf50' : cat === 'S' ? '#2196f3' : '#ff9800';
 
-        // Find appropriate suggestion
+        // Find appropriate suggestion based on score
         let suggestion = suggestions[cat].find(s => avg < s.threshold) || suggestions[cat][suggestions[cat].length - 1];
 
         html += `
@@ -127,12 +172,25 @@ function renderSuggestions(data) {
                 <h4 style="color: ${color}; margin-bottom: 0.5rem;">${catName} <span style="font-size: 0.9em; color: #666;">(평균 ${avg.toFixed(1)}점)</span></h4>
                 <h3 style="margin-bottom: 1rem;">${suggestion.title}</h3>
                 <p style="color: #555; line-height: 1.6;">${suggestion.content}</p>
+                
                 <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #eee;">
-                    <strong style="font-size: 0.9rem; color: #333;">추천 액션 아이템:</strong>
-                    <ul style="margin-top: 0.5rem; padding-left: 1.2rem; font-size: 0.9rem; color: #666;">
-                        <li>${cat} 영역 중장기 목표 수립 워크숍 개최</li>
-                        <li>관련 우수 사례 벤치마킹</li>
-                    </ul>
+                    <strong style="font-size: 0.9rem; color: #333;">Gap 분석 결과:</strong>
+                    <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #555;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span>인식 부족 (Type A):</span> <strong>${gapPercents[cat].awareness}%</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span>실천 부족 (Type B):</span> <strong>${gapPercents[cat].action}%</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>양호 (Ideal):</span> <strong>${gapPercents[cat].ideal}%</strong>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding: 0.8rem; background: #f9f9f9; border-radius: 4px; font-size: 0.85rem;">
+                        <strong>💡 맞춤 제언:</strong><br>
+                        ${getGapSuggestion(gapPercents[cat])}
+                    </div>
                 </div>
             </div>
         `;
@@ -157,6 +215,20 @@ function renderSuggestions(data) {
     `;
 
     container.innerHTML = html;
+}
+
+function getGapSuggestion(percents) {
+    const awareness = parseFloat(percents.awareness);
+    const action = parseFloat(percents.action);
+    const ideal = parseFloat(percents.ideal);
+
+    if (awareness >= action && awareness >= ideal) {
+        return "직원들이 복지관의 ESG 활동을 잘 모르고 있습니다. <strong>내부 교육과 홍보를 강화</strong>하여 인지도를 높이는 것이 급선무입니다.";
+    } else if (action >= awareness && action >= ideal) {
+        return "직원들이 알고는 있으나 실천하지 못하고 있습니다. <strong>동기 부여와 실천 가능한 환경 조성</strong>이 필요합니다.";
+    } else {
+        return "전반적으로 인지와 실천 수준이 양호합니다. <strong>우수 사례를 발굴하고 포상</strong>하여 문화를 확산하세요.";
+    }
 }
 
 // --- 1. Comprehensive Results ---
