@@ -122,7 +122,7 @@ function renderSuggestions(data) {
                 mid.indicators.forEach(ind => {
                     // Checkbox data is stored in row[ind.id] as a comma-separated string
                     // e.g. "알고 있음, 하고 있음"
-                    const val = row[ind.id] || "";
+                    const val = getValue(row, ind.id) || "";
 
                     // Determine Gap Type
                     let type = 'unknown';
@@ -228,6 +228,19 @@ function getGapSuggestion(percents) {
     }
 }
 
+// --- Helper: Robust Value Getter ---
+function getValue(row, key) {
+    if (!row) return undefined;
+    if (row[key] !== undefined) return row[key];
+
+    // Case insensitive & Trim check
+    const lowerKey = key.toLowerCase().trim();
+    const foundKey = Object.keys(row).find(k => k.toLowerCase().trim() === lowerKey);
+    if (foundKey) return row[foundKey];
+
+    return undefined;
+}
+
 // --- Helper: Calculate Scores per Row ---
 function calculateRowScores(row) {
     const scores = { E: 0, S: 0, G: 0 };
@@ -236,7 +249,7 @@ function calculateRowScores(row) {
     ESG_CATEGORIES.forEach(cat => {
         cat.middleCategories.forEach(mid => {
             mid.indicators.forEach(ind => {
-                const val = Number(row[`${ind.id}_rating`]);
+                const val = Number(getValue(row, `${ind.id}_rating`));
                 if (!isNaN(val) && val > 0) {
                     scores[cat.id] += val;
                     counts[cat.id]++;
@@ -349,10 +362,11 @@ function renderRecentTable(data) {
         const tr = document.createElement('tr');
         const rowScores = calculateRowScores(row); // Use helper
 
-        // Handle keys (case-insensitive check)
-        const name = row.name || row.Name || row['성명'] || '-';
-        const dept = row.department || row.Department || row['부서'] || '-';
-        const date = row.Timestamp ? new Date(row.Timestamp).toLocaleDateString() : '-';
+        // Handle keys (case-insensitive check using getValue)
+        const name = getValue(row, 'name') || getValue(row, '성명') || '-';
+        const dept = getValue(row, 'department') || getValue(row, '부서') || '-';
+        const timestamp = getValue(row, 'Timestamp');
+        const date = timestamp ? new Date(timestamp).toLocaleDateString() : '-';
 
         tr.innerHTML = `
             <td>${date}</td>
@@ -381,7 +395,7 @@ function renderItemAnalysis(data) {
                 let count = 0;
 
                 data.forEach(row => {
-                    const val = Number(row[`${ind.id}_rating`]);
+                    const val = Number(getValue(row, `${ind.id}_rating`));
                     if (!isNaN(val) && val > 0) {
                         sum += val;
                         count++;
@@ -434,7 +448,7 @@ function renderTeamAnalysis(data) {
     const teams = {};
 
     data.forEach(row => {
-        const dept = row.department || row.Department || row['부서'] || '미지정';
+        const dept = getValue(row, 'department') || getValue(row, '부서') || '미지정';
         if (!teams[dept]) {
             teams[dept] = { count: 0, scores: { E: 0, S: 0, G: 0 }, counts: { E: 0, S: 0, G: 0 }, totalSum: 0 };
         }
@@ -446,7 +460,7 @@ function renderTeamAnalysis(data) {
         if (rowScores.S > 0) { teams[dept].scores.S += rowScores.S; teams[dept].counts.S++; }
         if (rowScores.G > 0) { teams[dept].scores.G += rowScores.G; teams[dept].counts.G++; }
 
-        let rowTotal = Number(row['Total Score']);
+        let rowTotal = Number(getValue(row, 'Total Score'));
         if (isNaN(rowTotal)) rowTotal = 0;
         teams[dept].totalSum += rowTotal;
     });
@@ -583,7 +597,7 @@ function parseExcelData(rows) {
         // 3. Indicator
         if (indicatorTitle && currentMiddle) {
             // Generate a simple ID for the indicator
-            const indicatorId = `${currentMain.id}_${currentMiddle.indicators.length + 1}`;
+            const indicatorId = `${currentMain.id}_${currentMiddle.indicators.length + 1} `;
 
             currentIndicator = findOrCreate(currentMiddle.indicators, 'title', indicatorTitle, () => ({
                 id: indicatorId,
