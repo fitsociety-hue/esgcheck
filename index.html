@@ -110,141 +110,138 @@
         <section id="completion-page" class="page">
             <div class="completion-content">
                 <div class="icon-check">✓</div>
-                <h2>진단이 완료되었습니다</h2>
-                <p>참여해 주셔서 감사합니다.<br>여러분의 소중한 의견은 복지관의 발전에 큰 힘이 됩니다.</p>
-                <button class="btn-primary" onclick="location.reload()">처음으로 돌아가기</button>
-            </div>
-        </section>
-    </div>
+                <!DOCTYPE html>
+                <html lang="ko">
 
-    <!DOCTYPE html>
-    <html lang="ko">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>강동어울림복지관 ESG 자체진단</title>
+                    <link rel="preconnect" href="https://fonts.googleapis.com">
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+                        rel="stylesheet">
+                    <link rel="stylesheet" href="css/style.css">
+                </head>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>강동어울림복지관 ESG 자체진단</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
-            rel="stylesheet">
-        <link rel="stylesheet" href="css/style.css">
-    </head>
+                <body>
+                    <div class="app-container">
+                        <!-- Landing Page -->
+                        <section id="landing-page" class="page active">
+                            <div class="hero-content">
+                                <div class="logo-area">
+                                    <div class="logo-icon">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h1>강동어울림복지관<br>ESG 경영 자체진단</h1>
+                                    <p class="subtitle">지속가능한 복지관 운영을 위한<br>ESG 경영 중장기 발전계획 수립의 첫걸음입니다.</p>
+                                </div>
 
-    <body>
-        <div class="app-container">
-            <!-- Landing Page -->
-            <section id="landing-page" class="page active">
-                <div class="hero-content">
-                    <div class="logo-area">
-                        <div class="logo-icon">
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-                            </svg>
-                        </div>
-                        <h1>강동어울림복지관<br>ESG 경영 자체진단</h1>
-                        <p class="subtitle">지속가능한 복지관 운영을 위한<br>ESG 경영 중장기 발전계획 수립의 첫걸음입니다.</p>
-                    </div>
+                                <div class="card-container">
+                                    <!-- Diagnosis Card -->
+                                    <div class="action-card" onclick="startDiagnosis()">
+                                        <div class="card-header">
+                                            <h3>자가진단 참여하기</h3>
+                                            <div class="icon-box user-icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                                    <circle cx="9" cy="7" r="4"></circle>
+                                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <p class="card-desc">복지관 직원용<br>개인별 ESG 인식 및 실천도 진단</p>
+                                        <div class="card-link">시작하기 →</div>
+                                    </div>
 
-                    <div class="card-container">
-                        <!-- Diagnosis Card -->
-                        <div class="action-card" onclick="startDiagnosis()">
-                            <div class="card-header">
-                                <h3>자가진단 참여하기</h3>
-                                <div class="icon-box user-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="9" cy="7" r="4"></circle>
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                    </svg>
+                                    <!-- Admin Card -->
+                                    <a href="admin.html" class="action-card admin-card-link">
+                                        <div class="card-header">
+                                            <h3><span class="highlight">관리자</span> 대시보드</h3>
+                                            <div class="icon-box admin-icon">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <p class="card-desc"><span class="highlight-bg">관리자</span> 전용<br>실시간 응답 현황 및 결과
+                                            분석</p>
+                                        <div class="card-link">확인하기 →</div>
+                                    </a>
                                 </div>
                             </div>
-                            <p class="card-desc">복지관 직원용<br>개인별 ESG 인식 및 실천도 진단</p>
-                            <div class="card-link">시작하기 →</div>
-                        </div>
+                        </section>
 
-                        <!-- Admin Card -->
-                        <a href="admin.html" class="action-card admin-card-link">
-                            <div class="card-header">
-                                <h3><span class="highlight">관리자</span> 대시보드</h3>
-                                <div class="icon-box admin-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                                    </svg>
-                                </div>
+                        <!-- User Info Page -->
+                        <section id="user-info-page" class="page">
+                            <div class="header">
+                                <h2>기본 정보 입력</h2>
+                                <p>통계 분석을 위해 기본 정보를 입력해 주세요.</p>
                             </div>
-                            <p class="card-desc"><span class="highlight-bg">관리자</span> 전용<br>실시간 응답 현황 및 결과 분석</p>
-                            <div class="card-link">확인하기 →</div>
-                        </a>
+                            <form id="user-info-form" onsubmit="submitUserInfo(event)">
+                                <div class="form-group">
+                                    <label for="userName">성명 (선택)</label>
+                                    <input type="text" id="userName" placeholder="성명을 입력하세요">
+                                </div>
+                                <div class="form-group">
+                                    <label for="department">소속 부서</label>
+                                    <input type="text" id="department" placeholder="소속 부서를 입력하세요 (예: 전략기획팀)" required>
+                                </div>
+                                <button type="submit" class="btn-primary">다음으로</button>
+                            </form>
+                        </section>
+
+                        <!-- Diagnosis Page -->
+                        <section id="diagnosis-page" class="page">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="progress-bar"></div>
+                            </div>
+                            <div class="header">
+                                <h2 id="category-title">카테고리 제목</h2>
+                                <p id="category-desc">카테고리 설명</p>
+                            </div>
+
+                            <div id="questions-container">
+                                <!-- Questions will be injected here -->
+                            </div>
+
+                            <div class="navigation-buttons">
+                                <button class="btn-secondary" onclick="prevCategory()" id="btn-prev">이전</button>
+                                <button class="btn-primary" onclick="nextCategory()" id="btn-next">다음</button>
+                            </div>
+                        </section>
+
+                        <!-- Completion Page -->
+                        <section id="completion-page" class="page">
+                            <div class="completion-content">
+                                <div class="icon-check">✓</div>
+                                <h2>진단이 완료되었습니다</h2>
+                                <p>참여해 주셔서 감사합니다.<br>여러분의 소중한 의견은 복지관의 발전에 큰 힘이 됩니다.</p>
+                                <button class="btn-primary" onclick="location.reload()">처음으로 돌아가기</button>
+                            </div>
+                        </section>
                     </div>
-                </div>
-            </section>
 
-            <!-- User Info Page -->
-            <section id="user-info-page" class="page">
-                <div class="header">
-                    <h2>기본 정보 입력</h2>
-                    <p>통계 분석을 위해 기본 정보를 입력해 주세요.</p>
-                </div>
-                <form id="user-info-form" onsubmit="submitUserInfo(event)">
-                    <div class="form-group">
-                        <label for="userName">성명 (선택)</label>
-                        <input type="text" id="userName" placeholder="성명을 입력하세요">
+                    <!-- Loading Overlay -->
+                    <div class="loading-overlay" id="loading-overlay">
+                        <div class="spinner"></div>
+                        <p>제출 중입니다...</p>
                     </div>
-                    <div class="form-group">
-                        <label for="department">소속 부서</label>
-                        <input type="text" id="department" placeholder="소속 부서를 입력하세요 (예: 전략기획팀)" required>
-                    </div>
-                    <button type="submit" class="btn-primary">다음으로</button>
-                </form>
-            </section>
 
-            <!-- Diagnosis Page -->
-            <section id="diagnosis-page" class="page">
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-                <div class="header">
-                    <h2 id="category-title">카테고리 제목</h2>
-                    <p id="category-desc">카테고리 설명</p>
-                </div>
+                    <script src="js/config.js"></script>
+                    <script src="js/data.js?v=1.1"></script>
+                    <script src="js/app.js?v=1.1"></script>
+                </body>
 
-                <div id="questions-container">
-                    <!-- Questions will be injected here -->
-                </div>
-
-                <div class="navigation-buttons">
-                    <button class="btn-secondary" onclick="prevCategory()" id="btn-prev">이전</button>
-                    <button class="btn-primary" onclick="nextCategory()" id="btn-next">다음</button>
-                </div>
-            </section>
-
-            <!-- Completion Page -->
-            <section id="completion-page" class="page">
-                <div class="completion-content">
-                    <div class="icon-check">✓</div>
-                    <h2>진단이 완료되었습니다</h2>
-                    <p>참여해 주셔서 감사합니다.<br>여러분의 소중한 의견은 복지관의 발전에 큰 힘이 됩니다.</p>
-                    <button class="btn-primary" onclick="location.reload()">처음으로 돌아가기</button>
-                </div>
-            </section>
-        </div>
-
-        <!-- Loading Overlay -->
-        <div class="loading-overlay" id="loading-overlay">
-            <div class="spinner"></div>
-            <p>제출 중입니다...</p>
-        </div>
-
-        <script src="js/config.js"></script>
-        <script src="js/data.js?v=1.1"></script>
-        <script src="js/app.js?v=1.1"></script>
-    </body>
-
-    </html>
+                </html>

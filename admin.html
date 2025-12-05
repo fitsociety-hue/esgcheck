@@ -84,6 +84,126 @@
         <div class="login-box">
             <h2>관리자 로그인</h2>
             <p style="margin-bottom: 1rem; color: #666;">비밀번호를 입력하세요</p>
+            <input type="password" id="admin-password" placeholder="비밀번호"
+                style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 8px;">
+            <button onclick="checkLogin()" class="btn-primary" style="width: 100%;">로그인</button>
+        </div>
+    </div>
+
+    <div class="admin-container" id="admin-content" style="display: none;">
+        <div class="header"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>ESG 진단 관리자 대시보드</h1>
+            <button onclick="location.href='index.html'" class="btn-secondary">메인으로</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('comprehensive')">종합 결과</button>
+            <button class="tab-btn" onclick="switchTab('item-analysis')">문항별 분석</button>
+            <button class="tab-btn" onclick="switchTab('team-analysis')">팀별 분석</button>
+        </div>
+
+        <!-- Tab Content: Comprehensive -->
+        <div id="tab-comprehensive" class="tab-content active">
+            <!-- Summary Cards -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>총 참여 인원</h3>
+                    <div class="stat-value" id="total-participants"
+                        style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">0</div>
+                </div>
+                <div class="card">
+                    <h3>환경 (E) 평균</h3>
+                    <div class="stat-value" id="avg-score-e" style="font-size: 2rem; font-weight: bold;">0</div>
+                </div>
+                <div class="card">
+                    <h3>사회 (S) 평균</h3>
+                    <div class="stat-value" id="avg-score-s" style="font-size: 2rem; font-weight: bold;">0</div>
+                </div>
+                <div class="card">
+                    <h3>지배구조 (G) 평균</h3>
+                    <div class="stat-value" id="avg-score-g" style="font-size: 2rem; font-weight: bold;">0</div>
+                </div>
+            </div>
+
+            <!-- Charts & Tables -->
+            <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="card">
+                    <h3>종합 역량 진단 (Radar Chart)</h3>
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>참여자 현황</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>일시</th>
+                                    <th>부서</th>
+                                    <th>이름</th>
+                                    <th>E</th>
+                                    <th>S</th>
+                                    <th>G</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Item Analysis -->
+        <div id="tab-item-analysis" class="tab-content" style="display: none;">
+            <div class="card">
+                <h3>문항별 상세 분석</h3>
+                <div class="table-container">
+                    <table class="data-table" id="item-analysis-table">
+                        <thead>
+                            <tr>
+                                <th>순위</th>
+                                <th>코드</th>
+                                <th>대분류</th>
+                                <th>중분류</th>
+                                <th>진단지표</th>
+                                <th>평균점수</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Team Analysis -->
+        <div id="tab-team-analysis" class="tab-content" style="display: none;">
+            <div class="card">
+                <h3>부서별 참여 및 점수 현황</h3>
+                <div id="team-analysis-container"></div>
+            </div>
+        </div>
+
+        <!-- Data Upload Section -->
+        <div style="margin-top: 2rem; text-align: right;">
+            <button onclick="toggleUploadMode()" class="btn-secondary">데이터 업로드 (설정)</button>
+        </div>
+        <div id="upload-section" class="card" style="display: none; margin-top: 1rem;">
+            <h3>진단 문항 데이터 업로드 (Excel)</h3>
+            <input type="file" id="file-input" accept=".xlsx, .xls" />
+            <button onclick="processFile()" class="btn-primary">변환하기</button>
+            <div id="json-output-container" style="display: none; margin-top: 1rem;">
+                <textarea id="json-output" style="width: 100%; height: 200px;"></textarea>
+                <button onclick="copyJson()" class="btn-secondary" style="margin-top: 0.5rem;">JSON 복사</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/data.js?v=1.1"></script>
+    <script src="js/admin.js?v=1.1"></script>
 </body>
 
 </html>
