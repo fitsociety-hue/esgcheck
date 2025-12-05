@@ -12,6 +12,18 @@ function checkLogin() {
     }
 }
 
+// Add Enter key support for password input
+document.addEventListener('DOMContentLoaded', function () {
+    const passwordInput = document.getElementById('admin-password');
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkLogin();
+            }
+        });
+    }
+});
+
 // Tab Switching
 function switchTab(tabId) {
     // Hide all tab contents
