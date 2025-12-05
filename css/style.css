@@ -392,22 +392,6 @@ body {
 }
 
 .btn-outline:hover {
-    background: #f8f9fa;
-    border-color: #bbb;
-    color: #333;
-}
-
-/* Summary Cards */
-.summary-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.card-total {
-    background: var(--primary-color);
-    color: white;
     position: relative;
     overflow: hidden;
     border-radius: 16px;
@@ -480,28 +464,6 @@ body {
 
 .card-score-s {
     border-top-color: #2196f3;
-}
-
-.card-score-g {
-    border-top-color: #ff9800;
-}
-
-/* Dashboard Main Grid */
-.dashboard-main-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 1.5rem;
-}
-
-.card {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: var(--shadow);
-}
-
-.chart-card {
-    min-height: 450px;
 }
 
 .table-card {
