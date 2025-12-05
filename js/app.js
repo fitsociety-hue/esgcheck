@@ -2,19 +2,18 @@
 let currentCategoryIndex = 0;
 let answers = {}; // Stores ratings (e.g., "e1_1": 4)
 let checks = {}; // Stores checkbox values (e.g., "e1_1": ["know", "doing"])
-let userInfo = {};
+let userInfo = { name: '', department: '미지정' }; // Default anonymous user info
 
 // DOM Elements
 const pages = {
     landing: document.getElementById('landing-page'),
-    userInfo: document.getElementById('user-info-page'),
+    // userInfo page removed
     diagnosis: document.getElementById('diagnosis-page'),
     completion: document.getElementById('completion-page')
 };
 
 const progressBar = document.getElementById('progress-bar');
-const categoryTitle = document.getElementById('category-title');
-const categoryDesc = document.getElementById('category-desc');
+// Category Title & Desc elements removed
 const questionsContainer = document.getElementById('questions-container');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
@@ -22,38 +21,27 @@ const loadingOverlay = document.getElementById('loading-overlay');
 
 // Navigation
 function showPage(pageId) {
-    Object.values(pages).forEach(page => page.classList.remove('active'));
-    pages[pageId].classList.add('active');
+    Object.values(pages).forEach(page => {
+        if (page) page.classList.remove('active');
+    });
+    if (pages[pageId]) pages[pageId].classList.add('active');
     window.scrollTo(0, 0);
 }
 
 function startDiagnosis() {
-    showPage('userInfo');
-}
-
-function submitUserInfo(event) {
-    event.preventDefault();
-    const name = document.getElementById('userName').value;
-    const department = document.getElementById('department').value;
-
-    if (!department) {
-        alert('소속 부서를 입력해 주세요.');
-        return;
-    }
-
-    userInfo = { name, department };
+    // Skip User Info Page, go directly to Diagnosis
     currentCategoryIndex = 0;
     renderCategory();
     showPage('diagnosis');
 }
 
+// submitUserInfo function removed
+
 // Diagnosis Logic
 function renderCategory() {
     const category = ESG_CATEGORIES[currentCategoryIndex];
 
-    // Update Header
-    categoryTitle.textContent = category.title;
-    categoryDesc.textContent = category.description;
+    // Update Header (Title & Desc removed from DOM)
 
     // Update Progress Bar
     const progress = ((currentCategoryIndex) / ESG_CATEGORIES.length) * 100;
