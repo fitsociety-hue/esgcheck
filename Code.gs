@@ -78,5 +78,37 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput("ESG Check Backend is running. Use POST to submit data.");
+  const lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    const action = e.parameter.action;
+    
+    if (action === 'getData') {
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      const data = sheet.getDataRange().getValues();
+      const headers = data[0];
+      const rows = data.slice(1);
+      
+      const result = rows.map(row => {
+        let obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index];
+        });
+        return obj;
+      });
+      
+      return ContentService.createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService.createTextOutput("ESG Check Backend is running. Use POST to submit data or ?action=getData to retrieve.")
+      .setMimeType(ContentService.MimeType.TEXT);
+      
+  } catch (e) {
+    return ContentService.createTextOutput(JSON.stringify({ 'error': e }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
 }

@@ -27,7 +27,16 @@ Since this is a static site (GitHub Pages), we need a backend to save the data. 
     -   Open `js/config.js` in this project.
     -   Replace `REPLACE_WITH_YOUR_DEPLOYED_APPS_SCRIPT_URL` with the URL you just copied.
 
-## 2. GitHub Pages Deployment
+## 2. Admin Dashboard Setup
+1.  **Redeploy GAS**: If you updated the `Code.gs` file, you must redeploy the Web App.
+    -   Click **Deploy** > **Manage deployments**.
+    -   Click the **pencil icon** (Edit) next to your active deployment.
+    -   **Version**: Select **New version**.
+    -   Click **Deploy**.
+2.  **Access Admin Page**: Go to `[Your GitHub Pages URL]/admin.html`.
+3.  **Password**: The default password is `admin`. You can change this in `js/admin.js`.
+
+## 3. GitHub Pages Deployment
 1.  Push this code to your GitHub repository.
 2.  Go to the repository **Settings** > **Pages**.
 3.  Under **Build and deployment** > **Source**, select **Deploy from a branch**.

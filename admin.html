@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESG 진단 관리자 페이지</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-box">
+            <h2>관리자 로그인</h2>
+            <p style="margin-bottom: 1rem; color: #666;">비밀번호를 입력하세요</p>
+            <input type="password" id="admin-password" placeholder="비밀번호" style="margin-bottom: 1rem;">
+            <button class="btn-primary" onclick="checkLogin()">로그인</button>
+        </div>
+    </div>
+
+    <div class="admin-container" id="admin-content" style="display: none;">
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>ESG 진단 현황판</h1>
+            <button class="btn-secondary" onclick="refreshData()">데이터 새로고침</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>총 참여자 수</h3>
+                <p id="total-participants" style="font-size: 3rem; font-weight: bold; color: var(--primary-color);">0
+                </p>
+                <p>명</p>
+            </div>
+            <div class="card">
+                <h3>평균 점수</h3>
+                <p id="average-score" style="font-size: 3rem; font-weight: bold; color: var(--secondary-color);">0</p>
+                <p>점</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3>분야별 평균 점수</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+
+        <div class="card">
+            <h3>최근 참여 내역</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>시간</th>
+                            <th>이름</th>
+                            <th>부서</th>
+                            <th>총점</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-table-body">
+                        <!-- Data rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

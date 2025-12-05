@@ -1,6 +1,7 @@
 // State
 let currentCategoryIndex = 0;
-let answers = {};
+let answers = {}; // Stores ratings (e.g., "e1_1": 4)
+let checks = {}; // Stores checkbox values (e.g., "e1_1": ["know", "doing"])
 let userInfo = {};
 
 // DOM Elements
@@ -58,29 +59,83 @@ function renderCategory() {
     const progress = ((currentCategoryIndex) / ESG_CATEGORIES.length) * 100;
     progressBar.style.width = `${progress}%`;
 
-    // Render Questions
+    // Render Content
     questionsContainer.innerHTML = '';
-    category.questions.forEach(q => {
-        const card = document.createElement('div');
-        card.className = 'question-card';
 
-        const existingAnswer = answers[q.id];
+    // Create Main Card
+    const card = document.createElement('div');
+    card.className = 'question-card';
 
-        card.innerHTML = `
-            <div class="question-text">${q.text}</div>
-            <div class="rating-options">
-                ${renderRatingOption(q.id, '우수', 4, existingAnswer)}
-                ${renderRatingOption(q.id, '양호', 3, existingAnswer)}
-                ${renderRatingOption(q.id, '보통', 2, existingAnswer)}
-                ${renderRatingOption(q.id, '미흡', 1, existingAnswer)}
+    // 1. Diagnosis Contents (List of items with checklists)
+    let contentsHtml = '<div class="contents-section">';
+    contentsHtml += '<p class="section-label">진단 내용 (각 항목별 해당사항 체크)</p>';
+
+    category.contents.forEach((content, index) => {
+        const contentId = `${category.id}_content_${index}`;
+        const existingChecks = checks[contentId] || [];
+
+        contentsHtml += `
+            <div class="content-item" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee;">
+                <div class="question-text" style="margin-bottom: 0.8rem;">${content}</div>
+                <div class="check-options">
+                    ${renderCheckOptions(contentId, existingChecks)}
+                </div>
             </div>
         `;
-        questionsContainer.appendChild(card);
     });
+    contentsHtml += '</div>';
+
+    // 2. Rating Section (One per Category)
+    const ratingId = `${category.id}_rating`;
+    const existingRating = answers[ratingId];
+
+    let ratingHtml = `
+        <div class="rating-section" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #eee;">
+            <p class="section-label" style="font-size: 1.1rem; color: #2E7D32;">진단 지표 평가 (필수)</p>
+            <div class="rating-options">
+                ${renderRatingOption(ratingId, '우수', 4, existingRating)}
+                ${renderRatingOption(ratingId, '양호', 3, existingRating)}
+                ${renderRatingOption(ratingId, '보통', 2, existingRating)}
+                ${renderRatingOption(ratingId, '미흡', 1, existingRating)}
+            </div>
+        </div>
+    `;
+
+    card.innerHTML = contentsHtml + ratingHtml;
+    questionsContainer.appendChild(card);
 
     // Update Buttons
     btnPrev.style.display = currentCategoryIndex === 0 ? 'none' : 'block';
     btnNext.textContent = currentCategoryIndex === ESG_CATEGORIES.length - 1 ? '제출하기' : '다음';
+}
+
+function renderCheckOptions(questionId, existingChecks) {
+    return CHECK_OPTIONS.map(opt => {
+        const isChecked = existingChecks.includes(opt.value) ? 'checked' : '';
+        const isSelected = existingChecks.includes(opt.value) ? 'selected' : '';
+        return `
+            <label class="check-option ${isSelected}" onclick="toggleCheck('${questionId}', '${opt.value}', this)">
+                <input type="checkbox" name="${questionId}_check" value="${opt.value}" ${isChecked}>
+                <span>${opt.label}</span>
+            </label>
+        `;
+    }).join('');
+}
+
+function toggleCheck(questionId, value, element) {
+    if (!checks[questionId]) checks[questionId] = [];
+
+    const checkbox = element.querySelector('input[type="checkbox"]');
+
+    if (checks[questionId].includes(value)) {
+        checks[questionId] = checks[questionId].filter(v => v !== value);
+        checkbox.checked = false;
+        element.classList.remove('selected');
+    } else {
+        checks[questionId].push(value);
+        checkbox.checked = true;
+        element.classList.add('selected');
+    }
 }
 
 function renderRatingOption(questionId, label, value, existingAnswer) {
@@ -118,11 +173,11 @@ function prevCategory() {
 
 function nextCategory() {
     // Validation
-    const currentQuestions = ESG_CATEGORIES[currentCategoryIndex].questions;
-    const unanswered = currentQuestions.filter(q => !answers[q.id]);
+    const category = ESG_CATEGORIES[currentCategoryIndex];
+    const ratingId = `${category.id}_rating`;
 
-    if (unanswered.length > 0) {
-        alert('모든 문항에 답변해 주세요.');
+    if (!answers[ratingId]) {
+        alert('진단 지표 평가를 선택해 주세요.');
         return;
     }
 
@@ -140,12 +195,24 @@ async function submitDiagnosis() {
     // Show loading state
     loadingOverlay.classList.add('active');
 
-    // Calculate Total Score (Optional)
-    const totalScore = Object.values(answers).reduce((a, b) => a + b, 0);
+    // Calculate Total Score
+    // Only count rating fields (ending in _rating)
+    const ratingKeys = Object.keys(answers).filter(k => k.endsWith('_rating'));
+    const totalScore = ratingKeys.reduce((sum, key) => sum + answers[key], 0);
+
+    // Prepare payload
+    const formattedChecks = {};
+    Object.keys(checks).forEach(key => {
+        formattedChecks[key] = checks[key].map(v => {
+            const opt = CHECK_OPTIONS.find(o => o.value === v);
+            return opt ? opt.label : v;
+        }).join(', ');
+    });
 
     const payload = {
         ...userInfo,
         ...answers,
+        ...formattedChecks,
         'Total Score': totalScore
     };
 
@@ -153,12 +220,11 @@ async function submitDiagnosis() {
         // Check if URL is configured
         if (CONFIG.APPS_SCRIPT_URL.includes("REPLACE")) {
             console.warn("Google Apps Script URL not configured. Simulating success.");
-            // Simulate delay
             await new Promise(resolve => setTimeout(resolve, 1000));
         } else {
             await fetch(CONFIG.APPS_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Important for Google Apps Script
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -174,3 +240,4 @@ async function submitDiagnosis() {
         loadingOverlay.classList.remove('active');
     }
 }
+
