@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 
 <head>
@@ -28,203 +28,328 @@
 
         .login-box {
             background: white;
-            padding: 2.5rem;
+            padding: 3rem 2.5rem;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             text-align: center;
+            width: 90%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-icon-container {
+            width: 64px;
+            height: 64px;
+            background-color: #f1f3f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: #495057;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-desc {
+            font-size: 0.95rem;
+            color: #868e96;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .login-input-group {
             width: 100%;
-            max-width: 400px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem; /* Space for icon */
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1); /* Primary color fade */
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 1rem;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 0.5rem;
+        }
+
+        .btn-back:hover {
+            text-decoration: underline;
         }
     </style>
-    <div class="header-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"></line>
-            <line x1="12" y1="20" x2="12" y2="4"></line>
-            <line x1="6" y1="20" x2="6" y2="14"></line>
-        </svg>
-    </div>
-    <div>
-        <h1>ESG 경영 자체진단 관리자</h1>
-        <p>전체 직원 및 팀별 진단 결과를 통합 분석합니다.</p>
-    </div>
-    </div>
-    <div class="header-right">
-        <span class="last-update">마지막 업데이트: <span id="last-update-time">-</span></span>
-        <button onclick="refreshData()" class="btn-outline">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 4v6h-6"></path>
-                <path d="M1 20v-6h6"></path>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            새로고침
-        </button>
-        <button onclick="location.href='index.html'" class="btn-outline">나가기</button>
-    </div>
-    </div>
+</head>
 
-    <!-- Tabs -->
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('comprehensive')">
-            종합 결과
-        </button>
-        <button class="tab-btn" onclick="switchTab('item-analysis')">
-            문항별 분석
-        </button>
-        <button class="tab-btn" onclick="switchTab('team-analysis')">
-            팀별 분석
-        </button>
-        <button class="tab-btn" onclick="switchTab('suggestions')">
-            워크숍 제언
-        </button>
-    </div>
-
-    <!-- Tab Content: Comprehensive -->
-    <div id="tab-comprehensive" class="tab-content active">
-        <!-- Summary Cards -->
-        <div class="summary-cards">
-            <div class="card card-total">
-                <h3>총 참여 인원</h3>
-                <div class="stat-value-large"><span id="total-participants">0</span><span class="unit">명</span>
-                </div>
-                <div class="icon-bg">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+<body>
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-box">
+            <div class="login-icon-container">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            <h2 class="login-title">관리자 접속</h2>
+            <p class="login-desc">접근 권한 확인을 위해 비밀번호를 입력해주세요.</p>
+            
+            <div class="login-input-group">
+                <div class="input-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
                     </svg>
                 </div>
+                <input type="password" id="admin-password" class="login-input" placeholder="비밀번호 4자리" autofocus>
             </div>
-            <div class="card card-score card-score-e">
-                <h3>환경 (E) 평균</h3>
-                <div class="score-value"><span id="avg-score-e">0</span><span class="max-score">/ 4.0</span></div>
+            
+            <button onclick="checkLogin()" class="btn-login">접속하기</button>
+            <button onclick="location.href='index.html'" class="btn-back">메인으로 돌아가기</button>
+        </div>
+    </div>
+
+    <div class="app-container" style="display: none;" id="admin-content">
+        <div class="admin-header">
+            <div class="header-left">
+                <div class="header-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1>ESG 경영 자체진단 관리자</h1>
+                    <p>전체 직원 및 팀별 진단 결과를 통합 분석합니다.</p>
+                </div>
             </div>
-            <div class="card card-score card-score-s">
-                <h3>사회 (S) 평균</h3>
-                <div class="score-value"><span id="avg-score-s">0</span><span class="max-score">/ 4.0</span></div>
-            </div>
-            <div class="card card-score card-score-g">
-                <h3>지배구조 (G) 평균</h3>
-                <div class="score-value"><span id="avg-score-g">0</span><span class="max-score">/ 4.0</span></div>
+            <div class="header-right">
+                <span class="last-update">마지막 업데이트: <span id="last-update-time">-</span></span>
+                <button onclick="refreshData()" class="btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    새로고침
+                </button>
+                <button onclick="location.href='index.html'" class="btn-outline">나가기</button>
             </div>
         </div>
 
-        <!-- Charts & Tables -->
-        <div class="dashboard-main-grid">
-            <div class="card chart-card">
-                <h3>종합 역량 진단</h3>
-                <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
-                    <canvas id="radarChart"></canvas>
-                </div>
-            </div>
-            <div class="card table-card">
-                <div class="card-header-row">
-                    <h3>참여 현황</h3>
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <button onclick="downloadPDF('tab-comprehensive', '종합결과')" class="btn-small">PDF 저장</button>
-                        <button onclick="downloadWord('tab-comprehensive', '종합결과')" class="btn-small">Word
-                            저장</button>
-                        <span class="badge-gray">최신순</span>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('comprehensive')">
+                종합 결과
+            </button>
+            <button class="tab-btn" onclick="switchTab('item-analysis')">
+                문항별 분석
+            </button>
+            <button class="tab-btn" onclick="switchTab('team-analysis')">
+                팀별 분석
+            </button>
+            <button class="tab-btn" onclick="switchTab('suggestions')">
+                워크숍 제언
+            </button>
+        </div>
+
+        <!-- Tab Content: Comprehensive -->
+        <div id="tab-comprehensive" class="tab-content active">
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="card card-total">
+                    <h3>총 참여 인원</h3>
+                    <div class="stat-value-large"><span id="total-participants">0</span><span class="unit">명</span>
+                    </div>
+                    <div class="icon-bg">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
                     </div>
                 </div>
+                <div class="card card-score card-score-e">
+                    <h3>환경 (E) 평균</h3>
+                    <div class="score-value"><span id="avg-score-e">0</span><span class="max-score">/ 4.0</span></div>
+                </div>
+                <div class="card card-score card-score-s">
+                    <h3>사회 (S) 평균</h3>
+                    <div class="score-value"><span id="avg-score-s">0</span><span class="max-score">/ 4.0</span></div>
+                </div>
+                <div class="card card-score card-score-g">
+                    <h3>지배구조 (G) 평균</h3>
+                    <div class="score-value"><span id="avg-score-g">0</span><span class="max-score">/ 4.0</span></div>
+                </div>
+            </div>
+
+            <!-- Charts & Tables -->
+            <div class="dashboard-main-grid">
+                <div class="card chart-card">
+                    <h3>종합 역량 진단</h3>
+                    <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                <div class="card table-card">
+                    <div class="card-header-row">
+                        <h3>참여 현황</h3>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <button onclick="downloadPDF('tab-comprehensive', '종합결과')" class="btn-small">PDF 저장</button>
+                            <button onclick="downloadWord('tab-comprehensive', '종합결과')" class="btn-small">Word
+                                저장</button>
+                            <span class="badge-gray">최신순</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>날짜</th>
+                                    <th>부서</th>
+                                    <th>성명</th>
+                                    <th>E</th>
+                                    <th>S</th>
+                                    <th>G</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="no-data-message" class="no-data"
+                        style="display: none; padding: 2rem; text-align: center; color: #999;">데이터가 없습니다.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Item Analysis -->
+        <div id="tab-item-analysis" class="tab-content" style="display: none;">
+            <div class="card">
+                <h3>문항별 상세 분석</h3>
                 <div class="table-responsive">
-                    <table class="data-table">
+                    <table class="data-table" id="item-analysis-table">
                         <thead>
                             <tr>
-                                <th>날짜</th>
-                                <th>부서</th>
-                                <th>성명</th>
-                                <th>E</th>
-                                <th>S</th>
-                                <th>G</th>
+                                <th>순위</th>
+                                <th>코드</th>
+                                <th>대분류</th>
+                                <th>중분류</th>
+                                <th>진단지표</th>
+                                <th>평균점수</th>
+                                <th>상태</th>
                             </tr>
                         </thead>
-                        <tbody id="recent-table-body"></tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
-                <div id="no-data-message" class="no-data"
-                    style="display: none; padding: 2rem; text-align: center; color: #999;">데이터가 없습니다.</div>
             </div>
         </div>
-    </div>
 
-    <!-- Tab Content: Item Analysis -->
-    <div id="tab-item-analysis" class="tab-content" style="display: none;">
-        <div class="card">
-            <h3>문항별 상세 분석</h3>
-            <div class="table-responsive">
-                <table class="data-table" id="item-analysis-table">
-                    <thead>
-                        <tr>
-                            <th>순위</th>
-                            <th>코드</th>
-                            <th>대분류</th>
-                            <th>중분류</th>
-                            <th>진단지표</th>
-                            <th>평균점수</th>
-                            <th>상태</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab Content: Team Analysis -->
-    <div id="tab-team-analysis" class="tab-content" style="display: none;">
-        <div class="card">
-            <div class="card-header-row"
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3>부서별 참여 및 점수 현황</h3>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button onclick="downloadPDF('tab-team-analysis', '팀별분석')" class="btn-small">PDF 저장</button>
-                    <button onclick="downloadWord('tab-team-analysis', '팀별분석')" class="btn-small">Word 저장</button>
+        <!-- Tab Content: Team Analysis -->
+        <div id="tab-team-analysis" class="tab-content" style="display: none;">
+            <div class="card">
+                <div class="card-header-row"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>부서별 참여 및 점수 현황</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="downloadPDF('tab-team-analysis', '팀별분석')" class="btn-small">PDF 저장</button>
+                        <button onclick="downloadWord('tab-team-analysis', '팀별분석')" class="btn-small">Word 저장</button>
+                    </div>
                 </div>
+                <div id="team-analysis-container"></div>
             </div>
-            <div id="team-analysis-container"></div>
         </div>
-    </div>
 
-    <!-- Tab Content: Workshop Suggestions -->
-    <div id="tab-suggestions" class="tab-content" style="display: none;">
-        <div class="card">
-            <div class="card-header-row"
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3>ESG 중장기 발전계획 수립 워크숍 제언</h3>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button onclick="downloadPDF('tab-suggestions', '워크숍제언')" class="btn-small">PDF 저장</button>
-                    <button onclick="downloadWord('tab-suggestions', '워크숍제언')" class="btn-small">Word 저장</button>
+        <!-- Tab Content: Workshop Suggestions -->
+        <div id="tab-suggestions" class="tab-content" style="display: none;">
+            <div class="card">
+                <div class="card-header-row"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>ESG 중장기 발전계획 수립 워크숍 제언</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="downloadPDF('tab-suggestions', '워크숍제언')" class="btn-small">PDF 저장</button>
+                        <button onclick="downloadWord('tab-suggestions', '워크숍제언')" class="btn-small">Word 저장</button>
+                    </div>
                 </div>
+                <p style="color: #666; margin-bottom: 2rem;">진단 결과를 바탕으로 한 영역별 맞춤형 제언입니다.</p>
+                <div id="suggestions-container"></div>
             </div>
-            <p style="color: #666; margin-bottom: 2rem;">진단 결과를 바탕으로 한 영역별 맞춤형 제언입니다.</p>
-            <div id="suggestions-container"></div>
         </div>
-    </div>
 
-    <!-- Data Upload Section -->
-    <div style="margin-top: 2rem; text-align: right;">
-        <button onclick="toggleUploadMode()" class="btn-secondary">데이터 업로드 (설정)</button>
-    </div>
-    <div id="upload-section" class="card" style="display: none; margin-top: 1rem;">
-        <h3>진단 문항 데이터 업로드 (Excel)</h3>
-        <input type="file" id="file-input" accept=".xlsx, .xls" />
-        <button onclick="processFile()" class="btn-primary">변환하기</button>
-        <div id="json-output-container" style="display: none; margin-top: 1rem;">
-            <textarea id="json-output"
-                style="width: 100%; height: 200px; padding: 1rem; border: 1px solid #ddd; border-radius: 8px;"></textarea>
-            <button onclick="copyJson()" class="btn-secondary" style="margin-top: 0.5rem;">JSON 복사</button>
+        <!-- Data Upload Section -->
+        <div style="margin-top: 2rem; text-align: right;">
+            <button onclick="toggleUploadMode()" class="btn-secondary">데이터 업로드 (설정)</button>
         </div>
-    </div>
+        <div id="upload-section" class="card" style="display: none; margin-top: 1rem;">
+            <h3>진단 문항 데이터 업로드 (Excel)</h3>
+            <input type="file" id="file-input" accept=".xlsx, .xls" />
+            <button onclick="processFile()" class="btn-primary">변환하기</button>
+            <div id="json-output-container" style="display: none; margin-top: 1rem;">
+                <textarea id="json-output"
+                    style="width: 100%; height: 200px; padding: 1rem; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                <button onclick="copyJson()" class="btn-secondary" style="margin-top: 0.5rem;">JSON 복사</button>
+            </div>
+        </div>
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/data.js?v=1.1"></script>
     <script src="js/admin.js?v=1.1"></script>
-    </body>
+</body>
 
 </html>
