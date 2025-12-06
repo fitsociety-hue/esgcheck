@@ -407,7 +407,7 @@ body {
 
 .card-total {
     background: var(--primary-color);
-    color: white;
+    color: #333;
     position: relative;
     overflow: hidden;
     border-radius: 24px;
@@ -420,7 +420,7 @@ body {
 }
 
 .card-total h3 {
-    color: rgba(255, 255, 255, 0.9);
+    color: #2196f3;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
     font-weight: 500;
@@ -431,7 +431,7 @@ body {
 .card-total .stat-value-large {
     font-size: 3rem;
     font-weight: 800;
-    color: white;
+    color: #2196f3;
     position: relative;
     z-index: 2;
     line-height: 1.2;
@@ -442,7 +442,7 @@ body {
     font-weight: normal;
     margin-left: 0.3rem;
     opacity: 0.9;
-    color: rgba(255, 255, 255, 0.9);
+    color: #2196f3;
 }
 
 .card-total .icon-bg {
@@ -450,8 +450,8 @@ body {
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    opacity: 0.25;
-    color: white;
+    opacity: 0.1;
+    color: #2196f3;
     width: auto;
     height: auto;
 }
