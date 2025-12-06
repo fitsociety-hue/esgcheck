@@ -52,12 +52,28 @@ async function fetchData() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log('Data received:', data);
+        const responseData = await response.json();
+        console.log('Data received:', responseData);
 
-        if (data.error) {
-            alert('데이터를 불러오는 중 오류가 발생했습니다: ' + JSON.stringify(data.error));
+        if (responseData.error) {
+            alert('데이터를 불러오는 중 오류가 발생했습니다: ' + JSON.stringify(responseData.error));
             return;
+        }
+
+        let data = [];
+        // Optimization: Handle compact format (headers + rows)
+        if (responseData.headers && responseData.rows) {
+            const headers = responseData.headers;
+            data = responseData.rows.map(row => {
+                let obj = {};
+                headers.forEach((h, i) => {
+                    obj[h] = row[i];
+                });
+                return obj;
+            });
+        } else if (Array.isArray(responseData)) {
+            // Backward compatibility for old format
+            data = responseData;
         }
 
         if (!data || data.length === 0) {

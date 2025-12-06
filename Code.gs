@@ -78,38 +78,37 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  const lock = LockService.getScriptLock();
-  lock.tryLock(10000);
-
+  // No lock needed for reading operations to improve concurrency
   try {
     const action = e.parameter.action;
     
     if (action === 'getData') {
       const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      // Get all data at once - much faster than reading row by row
       const data = sheet.getDataRange().getValues();
+      
+      if (!data || data.length === 0) {
+        return ContentService.createTextOutput(JSON.stringify({ headers: [], rows: [] }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // Optimization: Send headers and rows separately to reduce payload size
+      // instead of an array of objects which repeats keys for every row.
       const headers = data[0];
       const rows = data.slice(1);
       
-      const result = rows.map(row => {
-        let obj = {};
-        headers.forEach((header, index) => {
-          obj[header] = row[index];
-        });
-        return obj;
-      });
-      
-      return ContentService.createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(JSON.stringify({
+        headers: headers,
+        rows: rows
+      })).setMimeType(ContentService.MimeType.JSON);
     }
     
     return ContentService.createTextOutput("ESG Check Backend is running. Use POST to submit data or ?action=getData to retrieve.")
       .setMimeType(ContentService.MimeType.TEXT);
       
   } catch (e) {
-    return ContentService.createTextOutput(JSON.stringify({ 'error': e }))
+    return ContentService.createTextOutput(JSON.stringify({ 'error': e.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
-  } finally {
-    lock.releaseLock();
   }
 }
 
