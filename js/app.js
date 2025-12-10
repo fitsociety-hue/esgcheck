@@ -55,8 +55,8 @@ function submitUserInfo() {
 
     // Save info
     userInfo = {
-        name: name || '익명', // Use '익명' if empty, or just keep empty string if preferred, but existing code used '익명' logic implies we want to capture something. Actually prompt says "name is optional". Let's stick to what we collected.
-        department: department
+        'Name': name || '익명',
+        'Department': department
     };
 
     // Proceed to Diagnosis
