@@ -1175,3 +1175,90 @@ body {
         text-align: center;
     }
 }
+
+/* User Info Page */
+.user-info-container {
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+    max-width: 500px;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.info-header {
+    margin-bottom: 2.5rem;
+}
+
+.info-header h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.8rem;
+    font-size: 1.8rem;
+}
+
+.info-header p {
+    color: #666;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1);
+}
+
+.form-group input.error {
+    border-color: #f44336;
+    background-color: #ffebee;
+}
+
+.form-group .optional {
+    font-size: 0.8rem;
+    color: #999;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.form-group .required {
+    font-size: 0.8rem;
+    color: #f44336;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.error-message {
+    color: #f44336;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.full-width {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+}

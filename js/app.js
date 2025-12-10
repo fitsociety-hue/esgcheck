@@ -7,7 +7,7 @@ let userInfo = { name: '', department: '미지정' }; // Default anonymous user 
 // DOM Elements
 const pages = {
     landing: document.getElementById('landing-page'),
-    // userInfo page removed
+    userInfo: document.getElementById('user-info-page'),
     diagnosis: document.getElementById('diagnosis-page'),
     completion: document.getElementById('completion-page')
 };
@@ -29,13 +29,41 @@ function showPage(pageId) {
 }
 
 function startDiagnosis() {
-    // Skip User Info Page, go directly to Diagnosis
+    // Show User Info Page first
+    showPage('userInfo');
+}
+
+function submitUserInfo() {
+    const nameInput = document.getElementById('user-name');
+    const deptInput = document.getElementById('user-dept');
+    const deptError = document.getElementById('dept-error');
+
+    const name = nameInput.value.trim();
+    const department = deptInput.value.trim();
+
+    // Validation
+    if (!department) {
+        deptInput.classList.add('error');
+        deptError.style.display = 'block';
+        deptInput.focus();
+        return;
+    }
+
+    // Reset error state
+    deptInput.classList.remove('error');
+    deptError.style.display = 'none';
+
+    // Save info
+    userInfo = {
+        name: name || '익명', // Use '익명' if empty, or just keep empty string if preferred, but existing code used '익명' logic implies we want to capture something. Actually prompt says "name is optional". Let's stick to what we collected.
+        department: department
+    };
+
+    // Proceed to Diagnosis
     currentCategoryIndex = 0;
     renderCategory();
     showPage('diagnosis');
 }
-
-// submitUserInfo function removed
 
 // Diagnosis Logic
 function renderCategory() {

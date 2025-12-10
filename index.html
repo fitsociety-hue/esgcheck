@@ -67,6 +67,33 @@
             </div>
         </section>
 
+        <!-- User Info Page -->
+        <section id="user-info-page" class="page">
+            <div class="user-info-container">
+                <div class="info-header">
+                    <h2>참여자 정보 입력</h2>
+                    <p>원활한 진단 결과 분석을 위해<br>참여자 정보를 입력해 주세요.</p>
+                </div>
+
+                <form id="user-info-form" onsubmit="event.preventDefault(); submitUserInfo();">
+                    <div class="form-group">
+                        <label for="user-name">이름 <span class="optional">(선택)</span></label>
+                        <input type="text" id="user-name" placeholder="이름을 입력해 주세요">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-dept">소속(사업팀) <span class="required">(필수)</span></label>
+                        <input type="text" id="user-dept" placeholder="소속 팀명을 입력해 주세요 (예: 운영지원팀)">
+                        <p class="error-message" id="dept-error">소속(사업팀)을 입력해 주세요.</p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary full-width">진단 시작하기</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
         <!-- Diagnosis Page -->
         <section id="diagnosis-page" class="page">
             <div class="progress-bar-container">
