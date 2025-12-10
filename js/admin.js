@@ -141,8 +141,20 @@ function renderSuggestions(data) {
                     }
 
                     // Gap Analysis
-                    // Checkbox data is stored in row[ind.id] as a comma-separated string
-                    const gapVal = getValue(row, ind.id) || "";
+                    // Checkbox data is stored in columns like "e1_1_content_0", "e1_1_content_1", etc.
+                    let gapVal = "";
+                    if (ind.contents && ind.contents.length > 0) {
+                        ind.contents.forEach((_, idx) => {
+                            const contentKey = `${ind.id}_content_${idx}`;
+                            const val = getValue(row, contentKey);
+                            if (val) gapVal += val + ",";
+                        });
+                    } else {
+                        // Fallback for cases where contents might not be defined in data.js (unlikely but safe)
+                        gapVal = getValue(row, ind.id) || "";
+                    }
+
+                    // Determine Gap Type
                     let type = 'unknown';
                     if (gapVal.includes('알지 못함')) {
                         type = 'awareness';
