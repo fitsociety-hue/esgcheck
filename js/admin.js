@@ -95,48 +95,21 @@ function processData(data) {
 }
 
 // --- 4. Workshop Suggestions ---
+// --- 4. Workshop Suggestions ---
 function renderSuggestions(data) {
     const container = document.getElementById('suggestions-container');
     if (!container) return;
 
-    // Calculate overall averages
-    let totalScores = { E: 0, S: 0, G: 0 };
-    let totalCounts = 0;
+    // --- 1. Calculate Statistics ---
 
-    data.forEach(row => {
-        const rowScores = calculateRowScores(row);
-        if (rowScores.E > 0) totalScores.E += rowScores.E;
-        if (rowScores.S > 0) totalScores.S += rowScores.S;
-        if (rowScores.G > 0) totalScores.G += rowScores.G;
-        if (rowScores.E > 0 || rowScores.S > 0 || rowScores.G > 0) totalCounts++;
-    });
+    // Overall Category Averages
+    const catScores = { E: 0, S: 0, G: 0 };
+    const catCounts = { E: 0, S: 0, G: 0 };
 
-    const averages = {
-        E: totalCounts ? (totalScores.E / totalCounts) : 0,
-        S: totalCounts ? (totalScores.S / totalCounts) : 0,
-        G: totalCounts ? (totalScores.G / totalCounts) : 0
-    };
+    // Indicator Scores for finding weaknesses
+    const indicatorScores = {};
 
-    // Suggestion Logic
-    const suggestions = {
-        E: [
-            { threshold: 2.5, title: "환경 경영 체계 구축 시급", content: "환경 경영 방침을 수립하고, 에너지 사용량 모니터링 시스템을 도입해야 합니다." },
-            { threshold: 3.5, title: "친환경 캠페인 확대", content: "임직원이 참여하는 '잔반 줄이기', '플라스틱 프리' 캠페인을 정례화하여 문화를 확산하세요." },
-            { threshold: 5.0, title: "환경 리더십 강화", content: "지역사회와 연계한 환경 보호 활동을 주도하고, 탄소 중립 로드맵을 고도화하세요." }
-        ],
-        S: [
-            { threshold: 2.5, title: "기본적인 인권 경영 도입", content: "취업규칙을 점검하고, 고충 처리 채널을 활성화하여 내부 소통을 강화해야 합니다." },
-            { threshold: 3.5, title: "지역사회 공헌 프로그램 개발", content: "기관의 특성을 살린 사회공헌 프로그램을 기획하고, 자원봉사 활동을 장려하세요." },
-            { threshold: 5.0, title: "이해관계자 소통 고도화", content: "다양한 이해관계자와의 정기적인 간담회를 통해 경영 투명성을 높이고 상생 모델을 구축하세요." }
-        ],
-        G: [
-            { threshold: 2.5, title: "윤리 경영 규정 정비", content: "윤리 헌장을 제정하고, 전 직원 대상 윤리 교육을 의무화해야 합니다." },
-            { threshold: 3.5, title: "의사결정 투명성 제고", content: "위원회 운영을 활성화하고, 주요 의사결정 과정을 내부에 투명하게 공개하세요." },
-            { threshold: 5.0, title: "ESG 경영 내재화", content: "ESG 성과 지표를 KPI에 반영하고, 지속가능경영보고서를 발간하여 대외 신뢰도를 높이세요." }
-        ]
-    };
-
-    // --- Gap Analysis Logic ---
+    // Gap Stats
     const gapStats = {
         E: { total: 0, awareness: 0, action: 0, ideal: 0 },
         S: { total: 0, awareness: 0, action: 0, ideal: 0 },
@@ -144,21 +117,39 @@ function renderSuggestions(data) {
     };
 
     data.forEach(row => {
+        // A. Category Scores
+        const rowScores = calculateRowScores(row);
+        ['E', 'S', 'G'].forEach(cat => {
+            if (rowScores[cat] > 0) {
+                catScores[cat] += rowScores[cat];
+                catCounts[cat]++;
+            }
+        });
+
+        // B. Indicator Analysis & Gap Analysis
         ESG_CATEGORIES.forEach(cat => {
             cat.middleCategories.forEach(mid => {
                 mid.indicators.forEach(ind => {
-                    // Checkbox data is stored in row[ind.id] as a comma-separated string
-                    // e.g. "알고 있음, 하고 있음"
-                    const val = getValue(row, ind.id) || "";
+                    const ratingKey = `${ind.id}_rating`;
+                    const val = Number(getValue(row, ratingKey));
 
-                    // Determine Gap Type
+                    if (!indicatorScores[ind.id]) indicatorScores[ind.id] = { sum: 0, count: 0, title: ind.title, catId: cat.id };
+
+                    if (!isNaN(val) && val > 0) {
+                        indicatorScores[ind.id].sum += val;
+                        indicatorScores[ind.id].count++;
+                    }
+
+                    // Gap Analysis
+                    // Checkbox data is stored in row[ind.id] as a comma-separated string
+                    const gapVal = getValue(row, ind.id) || "";
                     let type = 'unknown';
-                    if (val.includes('알지 못함')) {
-                        type = 'awareness'; // Type A: Awareness Gap
-                    } else if (val.includes('알고 있음') && !val.includes('하고 있음')) {
-                        type = 'action'; // Type B: Action Gap
-                    } else if (val.includes('알고 있음') && val.includes('하고 있음')) {
-                        type = 'ideal'; // Type D: Ideal
+                    if (gapVal.includes('알지 못함')) {
+                        type = 'awareness';
+                    } else if (gapVal.includes('알고 있음') && !gapVal.includes('하고 있음')) {
+                        type = 'action';
+                    } else if (gapVal.includes('알고 있음') && gapVal.includes('하고 있음')) {
+                        type = 'ideal';
                     }
 
                     if (type !== 'unknown') {
@@ -170,10 +161,30 @@ function renderSuggestions(data) {
         });
     });
 
-    // Calculate Percentages
+    // --- 2. Process Findings ---
+
+    const averages = {
+        E: catCounts.E ? (catScores.E / catCounts.E) : 0,
+        S: catCounts.S ? (catScores.S / catCounts.S) : 0,
+        G: catCounts.G ? (catScores.G / catCounts.G) : 0
+    };
+
+    // Find Weakest Indicators
+    const weakest = { E: null, S: null, G: null };
+    Object.keys(indicatorScores).forEach(id => {
+        const item = indicatorScores[id];
+        const avg = item.count ? (item.sum / item.count) : 0;
+        const cat = item.catId;
+
+        if (!weakest[cat] || avg < weakest[cat].avg) {
+            weakest[cat] = { ...item, avg: avg, id: id };
+        }
+    });
+
+    // Process Gap Percentages
     const gapPercents = {};
     ['E', 'S', 'G'].forEach(id => {
-        const total = gapStats[id].total || 1; // Avoid division by zero
+        const total = gapStats[id].total || 1;
         gapPercents[id] = {
             awareness: ((gapStats[id].awareness / total) * 100).toFixed(1),
             action: ((gapStats[id].action / total) * 100).toFixed(1),
@@ -181,21 +192,44 @@ function renderSuggestions(data) {
         };
     });
 
-    let html = '<div class="suggestions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">';
+    // --- 3. Render HTML ---
+
+    let html = `
+        <p style="color: #666; margin-bottom: 2rem;">
+            현재 <strong>${data.length}명</strong>의 응답 결과를 분석한 실시간 맞춤 제언입니다.
+        </p>
+        <div class="suggestions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    `;
 
     ['E', 'S', 'G'].forEach(cat => {
         const avg = averages[cat];
         const catName = cat === 'E' ? '환경(Environment)' : cat === 'S' ? '사회(Social)' : '지배구조(Governance)';
         const color = cat === 'E' ? '#4caf50' : cat === 'S' ? '#2196f3' : '#ff9800';
 
-        // Find appropriate suggestion based on score
-        let suggestion = suggestions[cat].find(s => avg < s.threshold) || suggestions[cat][suggestions[cat].length - 1];
+        // Dynamic Title Generation
+        const weakItem = weakest[cat];
+        const weakTitle = weakItem ? weakItem.title.replace(/\[.*?\]\s*/, '').trim() : "전반적 개선 필요";
+
+        // Suggestion Title Logic
+        let mainTitle = "";
+        let mainContent = "";
+
+        if (avg < 2.5) {
+            mainTitle = `'${weakTitle}' 개선 시급`;
+            mainContent = `해당 영역의 평균 점수는 ${avg.toFixed(1)}점으로, 특히 <strong>${weakTitle}</strong> 항목이 가장 취약합니다. 기초 체계 수립에 집중하세요.`;
+        } else if (avg < 3.5) {
+            mainTitle = `'${weakTitle}' 보완 필요`;
+            mainContent = `전반적으로 양호하나 <strong>${weakTitle}</strong> 항목의 보완이 필요합니다. 실천 활동을 점검해보세요.`;
+        } else {
+            mainTitle = `ESG 경영 고도화 단계`;
+            mainContent = `우수한 수준입니다. <strong>${weakTitle}</strong> 항목까지 챙기며 선도적인 모델을 구축하세요.`;
+        }
 
         html += `
             <div class="card" style="border-top: 4px solid ${color};">
                 <h4 style="color: ${color}; margin-bottom: 0.5rem;">${catName} <span style="font-size: 0.9em; color: #666;">(평균 ${avg.toFixed(1)}점)</span></h4>
-                <h3 style="margin-bottom: 1rem;">${suggestion.title}</h3>
-                <p style="color: #555; line-height: 1.6;">${suggestion.content}</p>
+                <h3 style="margin-bottom: 1rem; font-size: 1.3rem;">${mainTitle}</h3>
+                <p style="color: #555; line-height: 1.6; min-height: 3em;">${mainContent}</p>
                 
                 <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #eee;">
                     <strong style="font-size: 0.9rem; color: #333;">Gap 분석 결과:</strong>
@@ -212,8 +246,8 @@ function renderSuggestions(data) {
                     </div>
                     
                     <div style="margin-top: 1rem; padding: 0.8rem; background: #f9f9f9; border-radius: 4px; font-size: 0.85rem;">
-                        <strong>💡 맞춤 제언:</strong><br>
-                        ${getGapSuggestion(gapPercents[cat])}
+                        <strong>💡 ${catName} 맞춤 솔루션:</strong><br>
+                        ${getGapSuggestion(gapPercents[cat], weakTitle)}
                     </div>
                 </div>
             </div>
@@ -230,7 +264,7 @@ function renderSuggestions(data) {
                 <ol style="padding-left: 1.5rem; line-height: 1.8; color: #444;">
                     <li><strong>현황 진단 (Current State):</strong> 현재의 ESG 수준을 객관적으로 파악합니다. (본 자가진단 활용)</li>
                     <li><strong>비전 수립 (Visioning):</strong> 기관이 추구하는 ESG 경영의 미래상을 정의합니다.</li>
-                    <li><strong>핵심 과제 도출 (Key Issues):</strong> 비전 달성을 위해 해결해야 할 핵심 과제를 선정합니다.</li>
+                    <li><strong>핵심 과제 도출 (Key Issues):</strong> <span>분석된 취약 항목(위 결과 참조)을 우선 해결 과제로 선정합니다.</span></li>
                     <li><strong>로드맵 작성 (Roadmap):</strong> 단기(1년), 중기(3년), 장기(5년) 실행 계획을 수립합니다.</li>
                     <li><strong>모니터링 및 피드백 (Feedback):</strong> 정기적인 성과 점검 및 개선 활동을 수행합니다.</li>
                 </ol>
@@ -241,17 +275,19 @@ function renderSuggestions(data) {
     container.innerHTML = html;
 }
 
-function getGapSuggestion(percents) {
+function getGapSuggestion(percents, weakTitle) {
     const awareness = parseFloat(percents.awareness);
     const action = parseFloat(percents.action);
     const ideal = parseFloat(percents.ideal);
 
+    let strategy = "";
+
     if (awareness >= action && awareness >= ideal) {
-        return "직원들이 복지관의 ESG 활동을 잘 모르고 있습니다. <strong>내부 교육과 홍보를 강화</strong>하여 인지도를 높이는 것이 급선무입니다.";
+        return `구성원들이 <strong>'${weakTitle}'</strong> 등 관련 활동을 잘 모르고 있습니다. <br>👉 <strong>내부 교육과 홍보를 강화</strong>하여 인지도를 높이는 것이 급선무입니다.`;
     } else if (action >= awareness && action >= ideal) {
-        return "직원들이 알고는 있으나 실천하지 못하고 있습니다. <strong>동기 부여와 실천 가능한 환경 조성</strong>이 필요합니다.";
+        return `구성원들이 알고는 있으나 <strong>'${weakTitle}'</strong> 관련 실천으로 이어지지 못하고 있습니다. <br>👉 <strong>동기 부여와 실천 가능한 환경 조성</strong>이 필요합니다.`;
     } else {
-        return "전반적으로 인지와 실천 수준이 양호합니다. <strong>우수 사례를 발굴하고 포상</strong>하여 문화를 확산하세요.";
+        return `전반적으로 인지와 실천 수준이 양호합니다. <br>👉 <strong>'${weakTitle}'</strong> 분야의 <strong>우수 사례를 발굴하고 포상</strong>하여 문화를 확산하세요.`;
     }
 }
 
